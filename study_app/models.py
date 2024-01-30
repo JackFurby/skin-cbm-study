@@ -64,3 +64,16 @@ class Action(db.Model):
 
 	def __repr__(self):
 		return f'<Action {self.id}, {self.participant_id}, {self.type}, {self.last_action_time}, {self.action_time}, {self.update_value}, {self.concept_id}, {self.sample_id}, {self.reset_pressed}>'
+
+
+class Sample(db.Model):
+	id: so.Mapped[int] = so.mapped_column(primary_key=True)
+	participant_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(Participant.id), index=True)
+	malignant: so.Mapped[bool] = so.mapped_column(sa.Boolean())
+	start_time: so.Mapped[int] = so.mapped_column()
+	complete_time: so.Mapped[int] = so.mapped_column()
+	created_at: so.Mapped[datetime] = so.mapped_column(default=lambda: datetime.now(timezone.utc))
+	updated_at: so.Mapped[datetime] = so.mapped_column(default=lambda: datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
+
+	def __repr__(self):
+		return f'<Sample {self.id}, {self.participant_id}, {self.malignant}, {self.start_time}, {self.complete_time}>'

@@ -5,9 +5,10 @@ from datetime import datetime
 import os
 from werkzeug.utils import secure_filename
 from study_app.study import bp
-from study_app.forms import ConsentForm, DemographicForm
-from study_app.models import Consent, Demographic, Participant, Action
+from study_app.forms import ConsentForm, DemographicForm, SampleForm
+from study_app.models import Consent, Demographic, Participant, Action, Sample
 from study_app import db
+import random
 
 
 @bp.route('/', methods=["GET"])
@@ -68,13 +69,43 @@ def tutorial():
 	return render_template('study/tutorial.html', title='Tutorial')
 
 
-@bp.route('/samples')
+@bp.route('/samples', methods=['GET', 'POST'])
 def samples():
 
-	if "participant_id" in session:
+	if "participant_id" in session:  # redirect if participant has not completed demographic survey
 
-		sample_id = 0
+		if "samples_left" not in session:  # randomly order samples
+			samples = [int(i) for i in next(os.walk(f"{bp.static_folder}/samples"))[1]]
+			random.shuffle(samples)
+			session["samples_left"] = samples
+
+		if len(session["samples_left"]) == 0:  # if all samples seen; end study and go to closing survey
+			return redirect(url_for('study.sample_survey'))
+
+		# remove next sample from list
+		samples_left = session["samples_left"]
+		sample_id = samples_left.pop()
+		session["samples_left"] = samples_left
+
+		milliseconds = round(((datetime.utcnow() - datetime(1970, 1, 1)).total_seconds())*1000)  # time when sample is shown to participant
+		form = SampleForm(start_time=milliseconds)
+
+		# save participant sample classification
+		if form.validate_on_submit():
+
+			sample = Sample(
+				participant_id=int(session["participant_id"]),
+				malignant=True if request.form['submit'] == 'malignant' else False,
+				start_time=int(form.start_time.data),
+				complete_time=round(((datetime.utcnow() - datetime(1970, 1, 1)).total_seconds())*1000)
+			)
+			db.session.add(sample)
+			db.session.commit()
+
+		# get downstream task classification
 		task_out = "Malignant"
+
+		# get concept predictions and explanatons
 		concept_preds = []
 		# open txt file with concept predictions and concept explanation file names
 		with bp.open_resource(f"static/samples/{sample_id}/out.txt") as f:
@@ -82,7 +113,8 @@ def samples():
 			for line in content:
 				concept = line.split(" ")
 				concept_preds.append((int(concept[0].strip()), concept[1].strip(), float(concept[2].strip())))  # concept index, concept explanation file name, concept prediction
-		return render_template('study/samples.html', title='CBM Study', sample_id=sample_id, task_out=task_out, concept_out=concept_preds)
+
+		return render_template('study/samples.html', title='CBM Study', sample_id=sample_id, task_out=task_out, concept_out=concept_preds, form=form)
 	else:
 		return redirect(url_for('study.survey'))
 
@@ -97,6 +129,7 @@ def get_image(filename):
 	return send_from_directory(bp.static_folder, f"samples/{filename}")
 
 
+# log concept prediction changes
 @bp.route('/log_range_update/', methods=['POST'])
 def log_range_update():
 	action = Action(
@@ -112,11 +145,10 @@ def log_range_update():
 	db.session.add(action)
 	db.session.commit()
 
-	print(action)
-
 	return jsonify("Action logged")
 
 
+# log concepts participants see
 @bp.route('/log_concept_seen/', methods=['POST'])
 def log_concept_seen():
 	action = Action(
@@ -129,6 +161,12 @@ def log_concept_seen():
 	db.session.add(action)
 	db.session.commit()
 
-	print(action)
-	
 	return jsonify("Action logged")
+
+
+# clear session data
+@bp.route('/clear_session')
+def clear_session():
+	del session["samples_left"]
+	del session["participant_id"]
+	return redirect(url_for('study.study'))

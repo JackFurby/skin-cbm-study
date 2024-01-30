@@ -1,4 +1,4 @@
-from wtforms import StringField, BooleanField, RadioField, IntegerField, SelectField
+from wtforms import StringField, BooleanField, RadioField, IntegerField, SelectField, HiddenField
 from wtforms.validators import DataRequired
 from flask import flash
 from flask_wtf import FlaskForm
@@ -26,3 +26,7 @@ class DemographicForm(FlaskForm):
 	computer_experience = RadioField('I am experienced in computer science / computing', choices=["Strongly agree", "agree", "Neutral", "Disagree", "Strongly Disagree"], validators=[DataRequired()])
 	age = IntegerField('Age', validators=[DataRequired()])
 	gender = SelectField('Gender', choices=[("Male", "male"), ("Female", "female"), ("Other", "other"),], validators=[DataRequired()])
+
+
+class SampleForm(FlaskForm):
+	start_time = HiddenField('start time', validators=[DataRequired()])

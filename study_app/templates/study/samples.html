@@ -20,10 +20,13 @@
 					</div>
 				</div>
 				<div class="col-9">
-					<div class="row">
-						<button type="button" class="btn btn-secondary col-3">Malignant</button>
-						<button type="button" class="btn btn-secondary col-3">Benign</button>
-					</div>
+					<form action="" method="post">
+						{{ form.hidden_tag() }}
+						<div class="row">
+							<button type="submit" name=submit class="btn btn-primary col-3", value="malignant">Malignant</button>
+							<button type="submit" name=submit class="btn btn-primary col-3", value="benign">Benign</button>
+						</div>
+					</form>
 					<p>The AI predicted the sample as: {{task_out}}</p>
 				</div>
 			</div>
