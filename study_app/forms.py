@@ -1,5 +1,5 @@
-from wtforms import StringField, BooleanField, RadioField, IntegerField, SelectField, HiddenField
-from wtforms.validators import DataRequired
+from wtforms import StringField, BooleanField, RadioField, IntegerField, SelectField, HiddenField, TextAreaField
+from wtforms.validators import DataRequired, length
 from flask import flash
 from flask_wtf import FlaskForm
 from werkzeug.local import LocalProxy
@@ -30,3 +30,7 @@ class DemographicForm(FlaskForm):
 
 class SampleForm(FlaskForm):
 	start_time = HiddenField('start time', validators=[DataRequired()])
+
+
+class SurveyForm(FlaskForm):
+	text = TextAreaField('Comments about the AI and explanations', validators=[DataRequired(), length(max=5000)])

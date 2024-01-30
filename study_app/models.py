@@ -77,3 +77,14 @@ class Sample(db.Model):
 
 	def __repr__(self):
 		return f'<Sample {self.id}, {self.participant_id}, {self.malignant}, {self.start_time}, {self.complete_time}>'
+
+
+class Survey(db.Model):
+	id: so.Mapped[int] = so.mapped_column(primary_key=True)
+	participant_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(Participant.id), index=True)
+	text: so.Mapped[str] = so.mapped_column(sa.String(5000))
+	created_at: so.Mapped[datetime] = so.mapped_column(default=lambda: datetime.now(timezone.utc))
+	updated_at: so.Mapped[datetime] = so.mapped_column(default=lambda: datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
+
+	def __repr__(self):
+		return '<Survey {}>'.format(self.id)

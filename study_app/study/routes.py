@@ -5,8 +5,8 @@ from datetime import datetime
 import os
 from werkzeug.utils import secure_filename
 from study_app.study import bp
-from study_app.forms import ConsentForm, DemographicForm, SampleForm
-from study_app.models import Consent, Demographic, Participant, Action, Sample
+from study_app.forms import ConsentForm, DemographicForm, SampleForm, SurveyForm
+from study_app.models import Consent, Demographic, Participant, Action, Sample, Survey
 from study_app import db
 import random
 
@@ -19,47 +19,56 @@ def study():
 
 @bp.route('/forms', methods=['GET', 'POST'])
 def forms():
-	form = ConsentForm()
-	if form.validate_on_submit():
-		consent = Consent(
-			read_pis=form.read_pis.data,
-			understood_pis=form.understood_pis.data,
-			participation_voluntary=form.participation_voluntary.data,
-			information_consent=form.information_consent.data,
-			data_access=form.data_access.data,
-			anonymised_excerpts=form.anonymised_excerpts.data,
-			results_published=form.results_published.data,
-			take_part=form.take_part.data,
-			participant_name=form.participant_name.data,
-			date=form.date.data,
-			email=form.email.data,
-			keep_me_updated=form.keep_me_updated.data,
-		)
-		db.session.add(consent)
-		db.session.commit()
+	if "concept_form" not in session:
+		form = ConsentForm()
+		if form.validate_on_submit():
+			consent = Consent(
+				read_pis=form.read_pis.data,
+				understood_pis=form.understood_pis.data,
+				participation_voluntary=form.participation_voluntary.data,
+				information_consent=form.information_consent.data,
+				data_access=form.data_access.data,
+				anonymised_excerpts=form.anonymised_excerpts.data,
+				results_published=form.results_published.data,
+				take_part=form.take_part.data,
+				participant_name=form.participant_name.data,
+				date=form.date.data,
+				email=form.email.data,
+				keep_me_updated=form.keep_me_updated.data,
+			)
+			db.session.add(consent)
+			db.session.commit()
+
+			session["concept_form"] = True
+			return redirect('/survey')
+	else:
 		return redirect('/survey')
 	return render_template('study/forms.html', title='Consent form', form=form)
 
 
 @bp.route('/survey', methods=['GET', 'POST'])
 def survey():
-	form = DemographicForm()
-	if form.validate_on_submit():
-		demographic = Demographic(
-			skin_experience=form.skin_experience.data,
-			computer_experience=form.computer_experience.data,
-			age=form.age.data,
-			gender=form.gender.data
-		)
-		db.session.add(demographic)
-		db.session.commit()
+	if "demographic_survey" not in session:
+		form = DemographicForm()
+		if form.validate_on_submit():
+			demographic = Demographic(
+				skin_experience=form.skin_experience.data,
+				computer_experience=form.computer_experience.data,
+				age=form.age.data,
+				gender=form.gender.data
+			)
+			db.session.add(demographic)
+			db.session.commit()
 
-		participant = Participant()
-		db.session.add(participant)
-		db.session.commit()
+			participant = Participant()
+			db.session.add(participant)
+			db.session.commit()
 
-		session["participant_id"] = participant.id
-		session["demographic_id"] = demographic.id
+			session["participant_id"] = participant.id
+			session["demographic_id"] = demographic.id
+			session["demographic_survey"] = True
+			return redirect('/tutorial')
+	else:
 		return redirect('/tutorial')
 	return render_template('study/survey.html', title='Demographic survey', form=form)
 
@@ -119,9 +128,29 @@ def samples():
 		return redirect(url_for('study.survey'))
 
 
-@bp.route('/sample_survey')
+@bp.route('/sample_survey', methods=['GET', 'POST'])
 def sample_survey():
-	return render_template('study/sample_survey.html', title='Closing survey')
+	if "closing_survey" not in session:
+		form = SurveyForm()
+		if form.validate_on_submit():
+			survey = Survey(
+				participant_id=int(session["participant_id"]),
+				text=form.text.data,
+			)
+			db.session.add(survey)
+			db.session.commit()
+
+			session['closing_survey'] = True
+
+			return redirect('/close')
+	else:
+		return redirect('/close')
+	return render_template('study/sample_survey.html', title='Closing survey', form=form)
+
+
+@bp.route('/close')
+def close():
+	return render_template('study/close.html', title='Thank you')
 
 
 @bp.route('/get_image/<path:filename>')
@@ -169,4 +198,7 @@ def log_concept_seen():
 def clear_session():
 	del session["samples_left"]
 	del session["participant_id"]
+	del session["concept_form"]
+	del session["demographic_survey"]
+	del session['closing_survey']
 	return redirect(url_for('study.study'))
