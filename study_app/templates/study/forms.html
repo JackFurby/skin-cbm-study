@@ -1,0 +1,161 @@
+{% extends "template_parts/base.html" %}
+
+
+{% block content %}
+<main class="col px-md-4">
+	<div class="bg-white p-3 mt-4">
+		<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3">
+			<h1 class="h2">Forms</h1>
+		</div>
+		<div class="">
+
+			<h2>Consent form</h2>
+			<p>Title of research project: Concept Bottleneck Models expert user study</p>
+			<p>SREC reference and committee: COMSC/Ethics/2023/144</p>
+			<p>Name of Chief/Principal Investigator: Jack Furby</p>
+
+			<a href="{{ url_for('static', filename='files/PIS.docx') }}" download>Participant information sheet</a>
+
+			<form action="" method="post">
+				{{ form.hidden_tag() }}
+				<div class="row">
+					<div class="col-10 border">
+						<p>I confirm that I have read the information sheet dated 21/11/2023 version 2 for the above research project.</p>
+					</div>
+					<div class="col-2 border">
+						{{ form.read_pis.label }}
+						{{ form.read_pis }}
+						{% for error in form.read_pis.errors %}
+							<span style="color: red;">[{{ error }}]</span>
+						{% endfor %}
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-10 border">
+						<p>I confirm that I have understood the information sheet dated 21/11/2023 version 2 for the above research project and that I have had the opportunity to ask questions and that these have been answered satisfactorily.</p>
+					</div>
+					<div class="col-2 border">
+						{{ form.understood_pis.label }}
+						{{ form.understood_pis }}
+						{% for error in form.understood_pis.errors %}
+							<span style="color: red;">[{{ error }}]</span>
+						{% endfor %}
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-10 border">
+						<p>I understand that my participation is voluntary and I am free to withdraw at any time without giving a reason and without any adverse consequences (e.g. to medical care or legal rights, if relevant).</p>
+					</div>
+					<div class="col-2 border">
+						{{ form.participation_voluntary.label }}
+						{{ form.participation_voluntary }}
+						{% for error in form.participation_voluntary.errors %}
+							<span style="color: red;">[{{ error }}]</span>
+						{% endfor %}
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-10 border">
+						<p>I understand that my personal information (name and email) will be processed for the purposes explained to me, as set out in the information sheet.  I understand that such information will be held in accordance with all applicable data protection legislation and in strict confidence, unless disclosure is required by law or professional obligation. I have been informed of my rights under data protection legislation and how I can raise any concerns.</p>
+					</div>
+					<div class="col-2 border">
+						{{ form.information_consent.label }}
+						{{ form.information_consent }}
+						{% for error in form.information_consent.errors %}
+							<span style="color: red;">[{{ error }}]</span>
+						{% endfor %}
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-10 border">
+						<p>I understand who will have access to personal information provided, how the data will be stored and what will happen to the data at the end of the research project.</p>
+					</div>
+					<div class="col-2 border">
+						{{ form.data_access.label }}
+						{{ form.data_access }}
+						{% for error in form.data_access.errors %}
+							<span style="color: red;">[{{ error }}]</span>
+						{% endfor %}
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-10 border">
+						<p>I understand that anonymised excerpts and/or verbatim quotes from my submission may be used as part of the research publication.</p>
+					</div>
+					<div class="col-2 border">
+						{{ form.anonymised_excerpts.label }}
+						{{ form.anonymised_excerpts }}
+						{% for error in form.anonymised_excerpts.errors %}
+							<span style="color: red;">[{{ error }}]</span>
+						{% endfor %}
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-10 border">
+						<p>I understand how the findings and results of the research project will be written up and published.</p>
+					</div>
+					<div class="col-2 border">
+						{{ form.results_published.label }}
+						{{ form.results_published }}
+						{% for error in form.results_published.errors %}
+							<span style="color: red;">[{{ error }}]</span>
+						{% endfor %}
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-10 border">
+						<p>I agree to take part in this research project.</p>
+					</div>
+					<div class="col-2 border">
+						{{ form.take_part.label }}
+						{{ form.take_part }}
+						{% for error in form.take_part.errors %}
+							<span style="color: red;">[{{ error }}]</span>
+						{% endfor %}
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-3">
+						{{ form.participant_name.label }}
+						{{ form.participant_name }}
+						{% for error in form.participant_name.errors %}
+							<span style="color: red;">[{{ error }}]</span>
+						{% endfor %}
+					</div>
+					<div class="col-3">
+						{{ form.date.label }}
+						{{ form.date }}
+						{% for error in form.date.errors %}
+							<span style="color: red;">[{{ error }}]</span>
+						{% endfor %}
+					</div>
+					<div class="col-3">
+						{{ form.email.label }}
+						{{ form.email }}
+						{% for error in form.email.errors %}
+							<span style="color: red;">[{{ error }}]</span>
+						{% endfor %}
+					</div>
+					<div class="col-3 form-check">
+						{{ form.keep_me_updated.label }}
+						{{ form.keep_me_updated }}
+						{% for error in form.keep_me_updated.errors %}
+							<span style="color: red;">[{{ error }}]</span>
+						{% endfor %}
+					</div>
+
+				</div>
+
+				<button type="submit" class="btn btn-primary">Submit</button>
+			</form>
+
+			<p>Thank you for participating in our research you will be given a copy of this consent form to keep.<p>
+
+			<a class="btn btn-primary" href="{{ url_for('study.survey') }}" role="button">Survey</a>
+		</div>
+	</div>
+
+</main>
+
+{% endblock %}
