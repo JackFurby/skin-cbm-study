@@ -37,7 +37,7 @@ class Demographic(db.Model):
 	updated_at: so.Mapped[datetime] = so.mapped_column(default=lambda: datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
 
 	def __repr__(self):
-		return '<Demographic {}>'.format(self.id)
+		return f'<Demographic id:{self.id}, completed_study:{self.completed_study}>'
 
 
 class Participant(db.Model):

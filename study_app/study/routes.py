@@ -140,6 +140,12 @@ def sample_survey():
 			db.session.add(survey)
 			db.session.commit()
 
+			# update study to complete
+			demographic = Demographic.query.filter_by(id=session["demographic_id"]).first()
+			demographic.completed_study = True
+			db.session.add(demographic)
+			db.session.commit()
+
 			session['closing_survey'] = True
 
 			return redirect('/close')
