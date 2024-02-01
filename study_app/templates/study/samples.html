@@ -27,7 +27,7 @@
 							<button type="submit" name=submit class="btn btn-primary col-3", value="benign">Benign</button>
 						</div>
 					</form>
-					<p>The AI predicted the sample as: {{task_out}}</p>
+					<p>The AI predicted the sample as: <span id="task-out">{{task_out}}</span></p>
 				</div>
 			</div>
 			<h4>Predicted concepts</h4>
@@ -41,7 +41,7 @@
 
 						<div class="col-10">
 							<input type="hidden" id="{{ concept_id }}-initial" value="{{ concept[2]|round(2) }}">
-							<input type="range" class="form-range" min="0" max="1" step="0.01" value="{{ concept[2]|round(2) }}" id="{{ concept_id }}" name="{{ concept_id }}" onchange="enableBtn('{{ concept_id }}-reset'); updateValue('{{ concept_id }}'); logUpdate('{{ concept_id }}', '{{ sample_id }}', false)">
+							<input type="range" class="form-range" min="0" max="1" step="0.01" value="{{ concept[2]|round(2) }}" id="{{ concept_id }}" name="{{ concept_id }}" onchange="enableBtn('{{ concept_id }}-reset'); updateValue('{{ concept_id }}'); logUpdate('{{ concept_id }}', '{{ sample_id }}', false); predict();">
 							<p><span class="badge rounded-pill bg-secondary" id="{{ concept_id }}-badge">{{ concept[2]|round(2) }}</span></p>
 							<button type="button" class="btn btn-secondary" onclick="resetValue({{ concept_id }})" id="{{ concept_id }}-reset" disabled>Reset</button>
 						</div>
@@ -57,6 +57,8 @@
 
 </main>
 
+<script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.16.3/dist/ort.min.js"></script>
+
 <script type="text/javascript">
 
 	var last_recorded_action_time = Date.now();
@@ -68,7 +70,8 @@
 		document.getElementById(input_id).value = initial_value;
 		document.getElementById(input_id + "-reset").disabled = true;
 		document.getElementById(input_id + "-badge").innerHTML = initial_value;
-		logUpdate(input_id, sample_id, true)
+		logUpdate(input_id, sample_id, true);
+		predict();
 	};
 
 	// enabe reset button
@@ -125,6 +128,38 @@
 		{% set concept_id = concept[0] %}
 		observer.observe(document.querySelector("#explanation_{{ concept_id }}"));
 	{% endfor %}
+
+	// predict downstrea task from concept values
+	async function predict() {
+		// load model
+		const session = await ort.InferenceSession.create("{{ url_for('study.static', filename=model_name) }}");
+
+		// get concpet values and turn into tensor
+		var concept_arr = [];
+		{% for concept in concept_out %}
+			concept_arr.push(document.getElementById("{{ concept[0] }}").value);
+		{% endfor %}
+		const concept_vec = new Float32Array(concept_arr);
+		const tensorA = new ort.Tensor('float32', concept_vec, [1, 22]);
+
+		// prepare feed for models. Key is the model input name
+		const feeds = { "onnx::Gemm_0": tensorA };
+
+		// get downstream task predictions
+		const results = await session.run(feeds);
+
+		// Get index of highest value in downsream task predictions
+		const task_output = results["7"].data;
+		var maxNum = Math.max.apply(null, task_output);
+		var index = task_output.indexOf(maxNum);
+
+		// update task out prediction displayed
+		if (index <= 0) {
+			document.getElementById("task-out").innerHTML = "benign";
+		} else {
+			document.getElementById("task-out").innerHTML = "malignant";
+		};
+	}
 
 </script>
 

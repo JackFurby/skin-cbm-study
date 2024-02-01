@@ -93,8 +93,7 @@ def samples():
 
 		# remove next sample from list
 		samples_left = session["samples_left"]
-		sample_id = samples_left.pop()
-		session["samples_left"] = samples_left
+		sample_id = samples_left[-1]
 
 		milliseconds = round(((datetime.utcnow() - datetime(1970, 1, 1)).total_seconds())*1000)  # time when sample is shown to participant
 		form = SampleForm(start_time=milliseconds)
@@ -111,6 +110,10 @@ def samples():
 			db.session.add(sample)
 			db.session.commit()
 
+			# remove sample from samples_left
+			del samples_left[-1]
+			session["samples_left"] = samples_left
+
 		# get downstream task classification
 		task_out = "Malignant"
 
@@ -123,7 +126,11 @@ def samples():
 				concept = line.split(" ")
 				concept_preds.append((int(concept[0].strip()), concept[1].strip(), float(concept[2].strip())))  # concept index, concept explanation file name, concept prediction
 
-		return render_template('study/samples.html', title='CBM Study', sample_id=sample_id, task_out=task_out, concept_out=concept_preds, form=form)
+		#model_name = url_for(bp.static_folder, filename="CtoY_onnx_model.onnx")
+		model_name = "CtoY_onnx_model.onnx"
+
+
+		return render_template('study/samples.html', title='CBM Study', sample_id=sample_id, task_out=task_out, concept_out=concept_preds, form=form, model_name=model_name)
 	else:
 		return redirect(url_for('study.survey'))
 
@@ -202,9 +209,24 @@ def log_concept_seen():
 # clear session data
 @bp.route('/clear_session')
 def clear_session():
-	del session["samples_left"]
-	del session["participant_id"]
-	del session["concept_form"]
-	del session["demographic_survey"]
-	del session['closing_survey']
+	try:
+		del session["samples_left"]
+	except Exception as e:
+		print(f"Could not delete: {e}")
+	try:
+		del session["participant_id"]
+	except Exception as e:
+		print(f"Could not delete: {e}")
+	try:
+		del session["concept_form"]
+	except Exception as e:
+		print(f"Could not delete: {e}")
+	try:
+		del session["demographic_survey"]
+	except Exception as e:
+		print(f"Could not delete: {e}")
+	try:
+		del session['closing_survey']
+	except Exception as e:
+		print(f"Could not delete: {e}")
 	return redirect(url_for('study.study'))
