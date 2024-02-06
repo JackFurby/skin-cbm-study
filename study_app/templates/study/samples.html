@@ -4,14 +4,10 @@
 {% block content %}
 <main class="col px-md-4">
 	<div class="bg-white p-3 mt-4">
-		<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3">
-			<h1 class="h2">Samples</h1>
-		</div>
-		<hr/>
 
 		<div class="row">
 
-			<div class="row">
+			<div class="row mb-3">
 				<div class="col-3">
 					<div class="row">
 						<div class="col-12 m-sm-auto m-md-0">
@@ -20,33 +16,48 @@
 					</div>
 				</div>
 				<div class="col-9">
-					<form action="" method="post">
-						{{ form.hidden_tag() }}
-						<div class="row">
-							<button type="submit" name=submit class="btn btn-primary col-3", value="malignant">Malignant</button>
-							<button type="submit" name=submit class="btn btn-primary col-3", value="benign">Benign</button>
+					<div class="card border-info mb-3">
+						<div class="card-header">
+						AI prediction
 						</div>
-					</form>
-					<p>The AI predicted the sample as: <span id="task-out">{{task_out}}</span></p>
-				</div>
-			</div>
-			<h4>Predicted concepts</h4>
-			<div>
-				{% for concept in concept_out %}
-					{% set concept_id = concept[0] %}
-					<div class="row mb-3">
-						<div class="col-2">
-							<img class="" src="{{ url_for('study.get_image', filename=sample_id|string + '/' + concept[1]|string) }}" width="100%" id="explanation_{{ concept_id }}">
-						</div>
-
-						<div class="col-10">
-							<input type="hidden" id="{{ concept_id }}-initial" value="{{ concept[2]|round(2) }}">
-							<input type="range" class="form-range" min="0" max="1" step="0.01" value="{{ concept[2]|round(2) }}" id="{{ concept_id }}" name="{{ concept_id }}" onchange="enableBtn('{{ concept_id }}-reset'); updateValue('{{ concept_id }}'); logUpdate('{{ concept_id }}', '{{ sample_id }}', false); predict();">
-							<p><span class="badge rounded-pill bg-secondary" id="{{ concept_id }}-badge">{{ concept[2]|round(2) }}</span></p>
-							<button type="button" class="btn btn-secondary" onclick="resetValue({{ concept_id }})" id="{{ concept_id }}-reset" disabled>Reset</button>
+						<div class="card-body">
+							<p class="card-text" id="task-out">{{task_out}}</p>
 						</div>
 					</div>
-				{% endfor %}
+					<P class="h4">Please label the sample</p>
+					<form action="" method="post">
+						{{ form.hidden_tag() }}
+						<div class="d-grid d-md-block">
+							<button type="submit" name=submit class="btn btn-dark col-3", value="malignant">Malignant</button>
+							<button type="submit" name=submit class="btn btn-dark col-3", value="benign">Benign</button>
+						</div>
+					</form>
+				</div>
+			</div>
+
+			<button class="btn btn-primary col-4 mx-auto" type="button" data-bs-toggle="collapse" data-bs-target="#collapseConcepts" aria-expanded="false" aria-controls="collapseConcepts">
+				View/hide concepts
+			</button>
+			<div class="collapse" id="collapseConcepts" style="transition: 0.8s;">
+				<h4>Predicted concepts</h4>
+				<div>
+					{% for concept in concept_out %}
+						{% set concept_id = concept[0] %}
+						<div class="row mb-3">
+							<div class="col-2">
+								<p>{{ concept[3] }}</p>
+								<img class="" src="{{ url_for('study.get_image', filename=sample_id|string + '/' + concept[1]|string) }}" width="100%" id="explanation_{{ concept_id }}">
+							</div>
+
+							<div class="col-10">
+								<input type="hidden" id="{{ concept_id }}-initial" value="{{ concept[2]|round(2) }}">
+								<input type="range" class="form-range" min="0" max="1" step="0.01" value="{{ concept[2]|round(2) }}" id="{{ concept_id }}" name="{{ concept_id }}" onchange="enableBtn('{{ concept_id }}-reset'); updateValue('{{ concept_id }}'); logUpdate('{{ concept_id }}', '{{ sample_id }}', false); predict();">
+								<p><span class="badge rounded-pill bg-secondary" id="{{ concept_id }}-badge">{{ concept[2]|round(2) }}</span></p>
+								<button type="button" class="btn btn-secondary" onclick="resetValue({{ concept_id }})" id="{{ concept_id }}-reset" disabled>Reset</button>
+							</div>
+						</div>
+					{% endfor %}
+				</div>
 			</div>
 		</div>
 

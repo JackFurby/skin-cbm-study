@@ -32,7 +32,6 @@ def forms():
 				results_published=form.results_published.data,
 				take_part=form.take_part.data,
 				participant_name=form.participant_name.data,
-				date=form.date.data,
 				email=form.email.data,
 				keep_me_updated=form.keep_me_updated.data,
 			)
@@ -43,7 +42,7 @@ def forms():
 			return redirect('/survey')
 	else:
 		return redirect('/survey')
-	return render_template('study/forms.html', title='Consent form', form=form)
+	return render_template('study/forms.html', title='Consent form', form=form, date=datetime.now().strftime("%d/%m/%Y"))
 
 
 @bp.route('/survey', methods=['GET', 'POST'])
@@ -124,7 +123,7 @@ def samples():
 			content = (f.read().decode('latin1').strip()).split("\n")
 			for line in content:
 				concept = line.split(" ")
-				concept_preds.append((int(concept[0].strip()), concept[1].strip(), float(concept[2].strip())))  # concept index, concept explanation file name, concept prediction
+				concept_preds.append((int(concept[0].strip()), concept[1].strip(), float(concept[2].strip()), concept[3].strip()))  # concept index, concept explanation file name, concept prediction, concept string
 
 		#model_name = url_for(bp.static_folder, filename="CtoY_onnx_model.onnx")
 		model_name = "CtoY_onnx_model.onnx"

@@ -1,4 +1,4 @@
-from wtforms import StringField, BooleanField, RadioField, IntegerField, SelectField, HiddenField, TextAreaField
+from wtforms import StringField, BooleanField, RadioField, IntegerField, SelectField, HiddenField, TextAreaField, EmailField
 from wtforms.validators import DataRequired, length
 from flask import flash
 from flask_wtf import FlaskForm
@@ -16,8 +16,7 @@ class ConsentForm(FlaskForm):
 	results_published = StringField('Please initial box', validators=[DataRequired()])
 	take_part = StringField('Please initial box', validators=[DataRequired()])
 	participant_name = StringField('Name of participant', validators=[DataRequired()])
-	date = StringField('Date', validators=[DataRequired()])
-	email = StringField('Email', validators=[DataRequired()])
+	email = EmailField('Email', validators=[DataRequired()])
 	keep_me_updated = BooleanField('Keep me updated when this research is published', validators=[])
 
 
@@ -25,7 +24,7 @@ class DemographicForm(FlaskForm):
 	skin_experience = RadioField('I am an experienced at identifying skin disease from images', choices=["Strongly agree", "agree", "Neutral", "Disagree", "Strongly Disagree"], validators=[DataRequired()])
 	computer_experience = RadioField('I am experienced in computer science / computing', choices=["Strongly agree", "agree", "Neutral", "Disagree", "Strongly Disagree"], validators=[DataRequired()])
 	age = IntegerField('Age', validators=[DataRequired()])
-	gender = SelectField('Gender', choices=[("Male", "male"), ("Female", "female"), ("Other", "other"),], validators=[DataRequired()])
+	gender = SelectField('Gender', choices=[("", "Choose..."), ("Male", "male"), ("Female", "female"), ("Other", "other"),], validators=[DataRequired()])
 
 
 class SampleForm(FlaskForm):

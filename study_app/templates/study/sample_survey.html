@@ -12,10 +12,12 @@
 			<form action="" method="post">
 				{{ form.hidden_tag() }}
 
-				<div class="row">
+				<div class="row mb-3">
 
-					{{ form.text.label }}
-					{{ form.text }}
+					{{ form.text.label (class_="form-label") }}
+					<div class="col">
+						{{ form.text (class_="form-control") }}
+					</div>
 					{% for error in form.text.errors %}
 						<span style="color: red;">[{{ error }}]</span>
 					{% endfor %}

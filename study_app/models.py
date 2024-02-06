@@ -18,7 +18,7 @@ class Consent(db.Model):
 	results_published: so.Mapped[str] = so.mapped_column(sa.String(16))
 	take_part: so.Mapped[str] = so.mapped_column(sa.String(16))
 	participant_name: so.Mapped[str] = so.mapped_column(sa.String(128))
-	date: so.Mapped[str] = so.mapped_column(sa.String(32))
+	date: so.Mapped[datetime] = so.mapped_column(default=lambda: datetime.now(timezone.utc))
 	email: so.Mapped[str] = so.mapped_column(sa.String(128))
 	keep_me_updated: so.Mapped[bool] = so.mapped_column(sa.Boolean())
 
