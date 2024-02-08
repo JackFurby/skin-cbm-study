@@ -113,9 +113,6 @@ def samples():
 			del samples_left[-1]
 			session["samples_left"] = samples_left
 
-		# get downstream task classification
-		task_out = "Malignant"
-
 		# get concept predictions and explanatons
 		concept_preds = []
 		# open txt file with concept predictions and concept explanation file names
@@ -129,7 +126,7 @@ def samples():
 		model_name = "CtoY_onnx_model.onnx"
 
 
-		return render_template('study/samples.html', title='CBM Study', sample_id=sample_id, task_out=task_out, concept_out=concept_preds, form=form, model_name=model_name)
+		return render_template('study/samples.html', title='CBM Study', sample_id=sample_id, concept_out=concept_preds, form=form, model_name=model_name)
 	else:
 		return redirect(url_for('study.survey'))
 

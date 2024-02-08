@@ -11,7 +11,7 @@
 				<div class="col-3">
 					<div class="row">
 						<div class="col-12 m-sm-auto m-md-0">
-							<img class="mb-3" src="{{ url_for('study.get_image', filename=sample_id|string + '/input.jpg') }}" width="100%" id="model_input">
+							<img class="mb-3" src="{{ url_for('study.get_image', filename=sample_id|string + '/input.png') }}" width="100%" id="model_input">
 						</div>
 					</div>
 				</div>
@@ -21,7 +21,7 @@
 						AI prediction
 						</div>
 						<div class="card-body">
-							<p class="card-text" id="task-out">{{task_out}}</p>
+							<p class="card-text" id="task-out"></p>
 						</div>
 					</div>
 					<P class="h4">Please label the sample</p>
@@ -40,22 +40,29 @@
 			</button>
 			<div class="collapse" id="collapseConcepts" style="transition: 0.8s;">
 				<h4>Predicted concepts</h4>
-				<div>
+				<div class="row" id="all_explanations">
 					{% for concept in concept_out %}
 						{% set concept_id = concept[0] %}
-						<div class="row mb-3">
-							<div class="col-2">
-								<p>{{ concept[3] }}</p>
-								<img class="" src="{{ url_for('study.get_image', filename=sample_id|string + '/' + concept[1]|string) }}" width="100%" id="explanation_{{ concept_id }}">
-							</div>
 
-							<div class="col-10">
-								<input type="hidden" id="{{ concept_id }}-initial" value="{{ concept[2]|round(2) }}">
-								<input type="range" class="form-range" min="0" max="1" step="0.01" value="{{ concept[2]|round(2) }}" id="{{ concept_id }}" name="{{ concept_id }}" onchange="enableBtn('{{ concept_id }}-reset'); updateValue('{{ concept_id }}'); logUpdate('{{ concept_id }}', '{{ sample_id }}', false); predict();">
-								<p><span class="badge rounded-pill bg-secondary" id="{{ concept_id }}-badge">{{ concept[2]|round(2) }}</span></p>
-								<button type="button" class="btn btn-secondary" onclick="resetValue({{ concept_id }})" id="{{ concept_id }}-reset" disabled>Reset</button>
+						<div class="col-6">
+							<div class="card mb-3" id="explanation_{{ concept_id }}">
+								<div class="row g-0">
+									<div class="col-md-4">
+										<img class="img-fluid rounded-start" src="{{ url_for('study.get_image', filename=sample_id|string + '/' + concept[1]|string) }}" width="100%">
+									</div>
+									<div class="col-md-8">
+										<div class="card-body">
+											<p class="card-text">{{ concept[3] }}</p>
+											<input type="hidden" id="{{ concept_id }}-initial" value="{{ concept[2]|round(2) }}">
+											<input type="range" class="form-range" min="0" max="1" step="0.01" value="{{ concept[2]|round(2) }}" id="{{ concept_id }}" name="{{ concept_id }}" onchange="enableBtn('{{ concept_id }}-reset'); updateValue('{{ concept_id }}'); logUpdate('{{ concept_id }}', '{{ sample_id }}', false); predict();">
+											<p><span class="badge rounded-pill bg-secondary" id="{{ concept_id }}-badge">{{ concept[2]|round(2) }}</span></p>
+											<button type="button" class="btn btn-secondary" onclick="resetValue({{ concept_id }})" id="{{ concept_id }}-reset" disabled>Reset</button>
+										</div>
+									</div>
+								</div>
 							</div>
 						</div>
+
 					{% endfor %}
 				</div>
 			</div>
@@ -118,27 +125,28 @@
 		last_recorded_action_time = action_time;
 	};
 
-	// log whenever concept explanations are visible
-	var observer = new IntersectionObserver((entries) => {
-		if (entries[0].intersectionRatio >= 0.0001) {  // using ratio as without is less consistent
-			var concept_id = entries[0]['target'].id.split("_")[1] // get concept id
-			$.ajax({
-				type:'POST',
-				url:'{{ url_for('study.log_concept_seen') }}',
-				data:{
-					type: "concept visible",
-					action_time: Date.now(),
-					concept_id: concept_id,
-					sample_id: sample_id,
-				}
-			});
-		}
-	});
+	const allExplanaions = document.querySelectorAll('[id^="explanation_"]');
 
-	{% for concept in concept_out %}
-		{% set concept_id = concept[0] %}
-		observer.observe(document.querySelector("#explanation_{{ concept_id }}"));
-	{% endfor %}
+	allExplanaions.forEach(explanation_object => {
+		// log whenever concept explanations are visible
+		var observer = new IntersectionObserver((entries) => {
+			if (entries[0].intersectionRatio >= 0.001) {  // using ratio as without logs are less consistent
+				var concept_id = entries[0]['target'].id.split("_")[1] // get concept id
+				$.ajax({
+					type:'POST',
+					url:'{{ url_for('study.log_concept_seen') }}',
+					data:{
+						type: "concept visible",
+						action_time: Date.now(),
+						concept_id: concept_id,
+						sample_id: sample_id,
+					}
+				});
+			}
+		});
+
+		observer.observe(explanation_object);
+	});
 
 	// predict downstrea task from concept values
 	async function predict() {
@@ -170,6 +178,10 @@
 		} else {
 			document.getElementById("task-out").innerHTML = "malignant";
 		};
+	}
+
+	window.onload = function() {
+		predict();
 	}
 
 </script>
