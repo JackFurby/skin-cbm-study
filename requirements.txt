@@ -2,6 +2,7 @@ Flask==3.0.*
 Flask-WTF==1.2.*
 flask-sqlalchemy==3.1.*
 flask-migrate==4.0.*
+flask-mail==0.9.*
 libsass==0.22.*
 opencv-python==4.8.1.*
 imageio_ffmpeg==0.4.*
@@ -12,3 +13,4 @@ torch==2.1.0+cu121
 torchaudio==2.1.0+cu121
 torchvision==0.16.0+cu121
 matplotlib==3.8.*
+pip==24.*

@@ -16,7 +16,7 @@
 					</div>
 				</div>
 				<div class="col-9">
-					<div class="card border-info mb-3">
+					<div class="card border-info mb-3" id="ai-prediction">
 						<div class="card-header">
 						AI prediction
 						</div>
@@ -24,18 +24,10 @@
 							<p class="card-text" id="task-out"></p>
 						</div>
 					</div>
-					<P class="h4">Please label the sample</p>
-					<form action="" method="post">
-						{{ form.hidden_tag() }}
-						<div class="d-grid d-md-block">
-							<button type="submit" name=submit class="btn btn-dark col-3", value="malignant">Malignant</button>
-							<button type="submit" name=submit class="btn btn-dark col-3", value="benign">Benign</button>
-						</div>
-					</form>
 				</div>
 			</div>
 
-			<button class="btn btn-primary col-4 mx-auto" type="button" data-bs-toggle="collapse" data-bs-target="#collapseConcepts" aria-expanded="false" aria-controls="collapseConcepts">
+			<button class="btn btn-primary col-4 mx-auto mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#collapseConcepts" aria-expanded="false" aria-controls="collapseConcepts">
 				View/hide concepts
 			</button>
 			<div class="collapse" id="collapseConcepts" style="transition: 0.8s;">
@@ -66,6 +58,16 @@
 					{% endfor %}
 				</div>
 			</div>
+
+			<P class="h4 text-center">Please label the sample</p>
+
+			<form action="" method="post">
+				{{ form.hidden_tag() }}
+				<div class="d-flex justify-content-center">
+					<button type="submit" name=submit class="btn btn-secondary col-3 mx-2", value="malignant">Malignant</button>
+					<button type="submit" name=submit class="btn btn-secondary col-3 mx-2", value="benign">Benign</button>
+				</div>
+			</form>
 		</div>
 
 		<br/>
@@ -178,11 +180,22 @@
 		} else {
 			document.getElementById("task-out").innerHTML = "malignant";
 		};
-	}
+	};
 
 	window.onload = function() {
 		predict();
-	}
+	};
+
+	//https://bootstrap-menu.com/detail-fixed-onscroll.html
+	document.addEventListener("DOMContentLoaded", function(){
+		window.addEventListener('scroll', function() {
+			if (window.scrollY > 50) {
+				document.getElementById('ai-prediction').classList.add('fixed-top');
+			} else {
+				document.getElementById('ai-prediction').classList.remove('fixed-top');
+			}
+		});
+	});
 
 </script>
 

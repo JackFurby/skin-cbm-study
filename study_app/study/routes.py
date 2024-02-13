@@ -1,5 +1,6 @@
 from flask import Flask, request, Response, flash, make_response, current_app, send_from_directory, jsonify, session
 from flask import render_template, url_for, redirect
+from flask_mail import Message
 import cv2
 from datetime import datetime
 import os
@@ -8,6 +9,7 @@ from study_app.study import bp
 from study_app.forms import ConsentForm, DemographicForm, SampleForm, SurveyForm
 from study_app.models import Consent, Demographic, Participant, Action, Sample, Survey
 from study_app import db
+from study_app import mail
 import random
 
 
@@ -19,7 +21,7 @@ def study():
 
 @bp.route('/forms', methods=['GET', 'POST'])
 def forms():
-	if "concept_form" not in session:
+	if "consent_form" not in session:
 		form = ConsentForm()
 		if form.validate_on_submit():
 			consent = Consent(
@@ -38,7 +40,12 @@ def forms():
 			db.session.add(consent)
 			db.session.commit()
 
-			session["concept_form"] = True
+			#msg = Message('test subject', sender=current_app.config['MAIL_USERNAME'], recipients=['furbyjl@cardiff.ac.uk'])
+			#msg.body = 'text body'
+			#msg.html = '<h1>HTML body</h1>'
+			#mail.send(msg)
+
+			session["consent_form"] = True
 			return redirect('/survey')
 	else:
 		return redirect('/survey')
@@ -214,7 +221,7 @@ def clear_session():
 	except Exception as e:
 		print(f"Could not delete: {e}")
 	try:
-		del session["concept_form"]
+		del session["consent_form"]
 	except Exception as e:
 		print(f"Could not delete: {e}")
 	try:

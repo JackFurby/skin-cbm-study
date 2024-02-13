@@ -57,8 +57,14 @@ The following instructions will set up a local instance of the study app. This p
     ii. Enter the following variables
 
     ```sh
-    export STUDY_MODEL="independent.pth"
+    export MAIL_SERVER=smtp.office365.com
+    export MAIL_PORT=587
+    export MAIL_USE_TLS=1
+    export MAIL_USERNAME=<your-username>
+    export MAIL_PASSWORD=<your-password>
     ```
+
+    Note: If you need to use special characters enclose the var value in single quotation marks ('')
 
     STUDY_MODEL sets the file name and extension for a Pytorch model
 
