@@ -12,4 +12,4 @@ RUN pip3 install -r requirements.txt
 
 COPY . /demo
 
-CMD [ "flask", "--app", "skin-study", "run", "--host", "0.0.0.0"]
+CMD [ "flask", "--app", "study_app", "run", "--host", "0.0.0.0"]
