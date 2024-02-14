@@ -5,11 +5,17 @@ FROM python:3.10-slim-bullseye
 RUN apt-get update
 RUN apt-get install ffmpeg libsm6 libxext6 libxrender-dev -y
 
-WORKDIR /demo
-
 COPY requirements.txt requirements.txt
+RUN pip3 install --upgrade pip
 RUN pip3 install -r requirements.txt
+RUN pip install gunicorn
 
-COPY . /demo
+COPY app app
+COPY migrations migrations
+COPY study.py config.py boot.sh ./
+RUN chmod a+x boot.sh
 
-CMD [ "flask", "--app", "study_app", "run", "--host", "0.0.0.0"]
+ENV FLASK_APP study.py
+
+EXPOSE 5000
+ENTRYPOINT ["./boot.sh"]

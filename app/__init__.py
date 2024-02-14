@@ -10,8 +10,8 @@ migrate = Migrate()
 mail = Mail()
 
 
-import study_app.models
-import study_app.forms
+import app.models
+import app.forms
 
 
 def create_app(config_class=Config):
@@ -22,7 +22,7 @@ def create_app(config_class=Config):
 	app = Flask(__name__)
 	# Add SCSS to CSS while in development
 	app.wsgi_app = SassMiddleware(app.wsgi_app, {
-		'study_app': ('static/scss', 'static/css', '/static/css')
+		'app': ('static/scss', 'static/css', '/static/css')
 	})
 	app.config.from_object(config_class)
 
@@ -31,14 +31,14 @@ def create_app(config_class=Config):
 	mail.init_app(app)
 
 	# Study
-	from study_app.study import bp as study_bp
+	from app.study import bp as study_bp
 	app.register_blueprint(study_bp)
 
 	# Error pages and functions
-	from study_app.errors import bp as errors_bp
+	from app.errors import bp as errors_bp
 	app.register_blueprint(errors_bp)
 
-	from study_app.cli import bp as cli_bp
+	from app.cli import bp as cli_bp
 	app.register_blueprint(cli_bp)
 
 	# Normal app startup

@@ -5,11 +5,11 @@ import cv2
 from datetime import datetime
 import os
 from werkzeug.utils import secure_filename
-from study_app.study import bp
-from study_app.forms import ConsentForm, DemographicForm, SampleForm, SurveyForm
-from study_app.models import Consent, Demographic, Participant, Action, Sample, Survey
-from study_app import db
-from study_app import mail
+from app.study import bp
+from app.forms import ConsentForm, DemographicForm, SampleForm, SurveyForm
+from app.models import Consent, Demographic, Participant, Action, Sample, Survey
+from app import db
+from app import mail
 import random
 
 

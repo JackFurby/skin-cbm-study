@@ -1,7 +1,7 @@
 from typing import Optional
 import sqlalchemy as sa
 import sqlalchemy.orm as so
-from study_app import db
+from app import db
 from datetime import datetime, timezone
 import string
 import random
