@@ -7,24 +7,28 @@
 
 		<div class="row">
 
-			<div class="row mb-3">
-				<div class="col-3">
-					<div class="row">
-						<div class="col-12 m-sm-auto m-md-0">
-							<img class="mb-3" src="{{ url_for('study.get_image', filename=sample_id|string + '/input.png') }}" width="100%" id="model_input">
+			<div id="ai-prediction" class="bg-white">
+				<div class="container-fluid">
+				<div class="row mb-3">
+					<div class="col-3">
+						<div class="row">
+							<div class="col-12 m-sm-auto m-md-0">
+								<img class="mb-3" src="{{ url_for('study.get_image', filename=sample_id|string + '/input.png') }}" width="100%" id="model_input" style="max-width: 369px;">
+							</div>
 						</div>
 					</div>
-				</div>
-				<div class="col-9">
-					<div class="card border-info mb-3" id="ai-prediction">
-						<div class="card-header">
-						AI prediction
-						</div>
-						<div class="card-body">
-							<p class="card-text" id="task-out"></p>
+					<div class="col-9">
+						<div class="card border-info mb-3">
+							<div class="card-header">
+							AI prediction
+							</div>
+							<div class="card-body">
+								<p class="card-text" id="task-out"></p>
+							</div>
 						</div>
 					</div>
-				</div>
+			</div>
+			</div>
 			</div>
 
 			<button class="btn btn-primary col-4 mx-auto mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#collapseConcepts" aria-expanded="false" aria-controls="collapseConcepts">
@@ -32,12 +36,18 @@
 			</button>
 			<div class="collapse" id="collapseConcepts" style="transition: 0.8s;">
 				<h4>Predicted concepts</h4>
+
+				<label for="concept_order" class="form-label">Concept order</label>
+				<select class="form-select mb-3" aria-label="concept_order" id="concept_order" onChange="orderConcepts(this.options[this.selectedIndex].value, true)">
+					<option selected value="hl">Highest to lowest concept value</option>
+					<option value="lh">Lowest to highest concept value</option>
+				</select>
 				<div class="row" id="all_explanations">
 					{% for concept in concept_out %}
 						{% set concept_id = concept[0] %}
 
-						<div class="col-6">
-							<div class="card mb-3" id="explanation_{{ concept_id }}">
+						<div class="col-6" id="explanation_{{ concept_id }}">
+							<div class="card mb-3">
 								<div class="row g-0">
 									<div class="col-md-4">
 										<img class="img-fluid rounded-start" src="{{ url_for('study.get_image', filename=sample_id|string + '/' + concept[1]|string) }}" width="100%">
@@ -117,7 +127,7 @@
 				type: "range",
 				last_action_time: last_recorded_action_time,
 				action_time: action_time,
-				update_value: document.getElementById(concept_id).value,  // range htmp object id is the same as the concept id
+				update_value: document.getElementById(concept_id).value,  // range html object id is the same as the concept id
 				concept_id: concept_id,
 				sample_id: sample_id,
 				reset_pressed: reset_pressed,
@@ -182,10 +192,6 @@
 		};
 	};
 
-	window.onload = function() {
-		predict();
-	};
-
 	//https://bootstrap-menu.com/detail-fixed-onscroll.html
 	document.addEventListener("DOMContentLoaded", function(){
 		window.addEventListener('scroll', function() {
@@ -196,6 +202,49 @@
 			}
 		});
 	});
+
+	// reorder concept explanations
+	function orderConcepts(orderby, logUpdate) {
+		var concept_list = [];
+		// add all concepts ids and values to array
+		allExplanaions.forEach(explanation_object => {
+			concept_list.push([explanation_object.id, explanation_object.firstElementChild.firstElementChild.lastElementChild.firstElementChild.children[2].value])
+		});
+
+		// reorder aray
+		if (orderby == "lh") {
+			concept_list.sort(function(a,b){return a[1].localeCompare(b[1]);});
+		} else {  // hl
+			concept_list.sort(function(a,b){return a[1].localeCompare(b[1]);}).reverse();
+		}
+
+		// add each explanation to the div all_explanations in order of concept_list
+		container = document.getElementById("all_explanations")
+		concept_list.forEach(explanation => {
+			container.appendChild(document.getElementById(explanation[0]))
+		});
+
+		if (logUpdate) {
+			action_time = Date.now();
+
+			$.ajax({
+				type:'POST',
+				url:'{{ url_for('study.log_sort_update') }}',
+				data:{
+					type: "sort",
+					action_time: action_time,
+					update_value: orderby,
+					sample_id: sample_id,
+				}
+			});
+		};
+	};
+
+	// run all functions for the inital page load
+	window.onload = function() {
+		predict();
+		orderConcepts("hl", false);
+	};
 
 </script>
 

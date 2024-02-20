@@ -84,5 +84,5 @@ export FLASK_ENV=development
     You're done! All that is left now is to start the application and start developing!
 
     ```sh
-    flask --app study_app --debug run
+    flask --app app --debug run
     ```

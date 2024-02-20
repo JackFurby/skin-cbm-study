@@ -7,7 +7,7 @@ import os
 from werkzeug.utils import secure_filename
 from app.study import bp
 from app.forms import ConsentForm, DemographicForm, SampleForm, SurveyForm
-from app.models import Consent, Demographic, Participant, Action, Sample, Survey
+from app.models import Consent, Demographic, Participant, Action, Sample, Survey, ConceptSort
 from app import db
 from app import mail
 import random
@@ -146,6 +146,16 @@ def sample_survey():
 			survey = Survey(
 				participant_id=int(session["participant_id"]),
 				text=form.text.data,
+				factors_in_data=int(form.factors_in_data.data),
+				understood=int(form.understood.data),
+				change_detail_level=int(form.change_detail_level.data),
+				need_support=int(form.need_support.data),
+				understood_causality=int(form.understood_causality.data),
+				use_with_knowledge=int(form.use_with_knowledge.data),
+				no_inconsistencies=int(form.no_inconsistencies.data),
+				learn_to_understand=int(form.learn_to_understand.data),
+				need_references=int(form.need_references.data),
+				efficient=int(form.efficient.data)
 			)
 			db.session.add(survey)
 			db.session.commit()
@@ -205,6 +215,23 @@ def log_concept_seen():
 	)
 	db.session.add(action)
 	db.session.commit()
+
+	return jsonify("Action logged")
+
+
+# log concepts participants see
+@bp.route('/log_sort_update/', methods=['POST'])
+def log_sort_update():
+	action = ConceptSort(
+		participant_id=int(session["participant_id"]),
+		action_time=int(request.form.get("action_time")),
+		update_value=request.form.get("update_value"),
+		sample_id=int(request.form.get("sample_id"))
+	)
+	db.session.add(action)
+	db.session.commit()
+
+	print(action)
 
 	return jsonify("Action logged")
 
