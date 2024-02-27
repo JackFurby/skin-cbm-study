@@ -66,12 +66,15 @@ def survey():
 			db.session.add(demographic)
 			db.session.commit()
 
-			participant = Participant()
+			participant = Participant(
+				explanation_version=1  #<<<<<<<<<<<<<<<<<<<<<<<<<< How should this be set?
+			)
 			db.session.add(participant)
 			db.session.commit()
 
 			session["participant_id"] = participant.id
 			session["demographic_id"] = demographic.id
+			session["explanation_version"] = participant.explanation_version
 			session["demographic_survey"] = True
 			return redirect('/tutorial')
 	else:
@@ -86,9 +89,27 @@ def tutorial():
 
 @bp.route('/samples', methods=['GET', 'POST'])
 def samples():
+	milliseconds = round(((datetime.utcnow() - datetime(1970, 1, 1)).total_seconds())*1000)  # time when sample is shown to participant
+	form = SampleForm(start_time=milliseconds)
+	# save participant sample classification
+	if form.validate_on_submit():
+
+		sample = Sample(
+			participant_id=int(session["participant_id"]),
+			malignant=True if request.form['submit'] == 'malignant' else False,
+			start_time=int(form.start_time.data),
+			complete_time=round(((datetime.utcnow() - datetime(1970, 1, 1)).total_seconds())*1000)
+		)
+		db.session.add(sample)
+		db.session.commit()
+
+		samples_left = session["samples_left"]
+
+		# remove sample from samples_left
+		del samples_left[-1]
+		session["samples_left"] = samples_left
 
 	if "participant_id" in session:  # redirect if participant has not completed demographic survey
-
 		if "samples_left" not in session:  # randomly order samples
 			samples = [int(i) for i in next(os.walk(f"{bp.static_folder}/samples"))[1]]
 			random.shuffle(samples)
@@ -101,25 +122,6 @@ def samples():
 		samples_left = session["samples_left"]
 		sample_id = samples_left[-1]
 
-		milliseconds = round(((datetime.utcnow() - datetime(1970, 1, 1)).total_seconds())*1000)  # time when sample is shown to participant
-		form = SampleForm(start_time=milliseconds)
-
-		# save participant sample classification
-		if form.validate_on_submit():
-
-			sample = Sample(
-				participant_id=int(session["participant_id"]),
-				malignant=True if request.form['submit'] == 'malignant' else False,
-				start_time=int(form.start_time.data),
-				complete_time=round(((datetime.utcnow() - datetime(1970, 1, 1)).total_seconds())*1000)
-			)
-			db.session.add(sample)
-			db.session.commit()
-
-			# remove sample from samples_left
-			del samples_left[-1]
-			session["samples_left"] = samples_left
-
 		# get concept predictions and explanatons
 		concept_preds = []
 		# open txt file with concept predictions and concept explanation file names
@@ -129,11 +131,18 @@ def samples():
 				concept = line.split(" ")
 				concept_preds.append((int(concept[0].strip()), concept[1].strip(), float(concept[2].strip()), concept[3].strip()))  # concept index, concept explanation file name, concept prediction, concept string
 
-		#model_name = url_for(bp.static_folder, filename="CtoY_onnx_model.onnx")
 		model_name = "CtoY_onnx_model.onnx"
 
+		"""
+		explanation versions
+		====================
 
-		return render_template('study/samples.html', title='CBM Study', sample_id=sample_id, concept_out=concept_preds, form=form, model_name=model_name)
+		0 = Concept predictions only (with the option to show saliency maps???)
+		1 = Concept predictions and saliency maps
+		2 = Concept predictions + explanation by example
+		"""
+
+		return render_template('study/samples.html', title='CBM Study', sample_id=sample_id, concept_out=concept_preds, form=form, model_name=model_name, explanation_version=session["explanation_version"])
 	else:
 		return redirect(url_for('study.survey'))
 
@@ -219,7 +228,7 @@ def log_concept_seen():
 	return jsonify("Action logged")
 
 
-# log concepts participants see
+# log when a participants changes the order concepts are displayed
 @bp.route('/log_sort_update/', methods=['POST'])
 def log_sort_update():
 	action = ConceptSort(
@@ -230,8 +239,6 @@ def log_sort_update():
 	)
 	db.session.add(action)
 	db.session.commit()
-
-	print(action)
 
 	return jsonify("Action logged")
 
@@ -257,6 +264,10 @@ def clear_session():
 		print(f"Could not delete: {e}")
 	try:
 		del session['closing_survey']
+	except Exception as e:
+		print(f"Could not delete: {e}")
+	try:
+		del session["explanation_version"]
 	except Exception as e:
 		print(f"Could not delete: {e}")
 	return redirect(url_for('study.study'))

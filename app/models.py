@@ -42,6 +42,7 @@ class Demographic(db.Model):
 
 class Participant(db.Model):
 	id: so.Mapped[int] = so.mapped_column(primary_key=True)
+	explanation_version: so.Mapped[int] = so.mapped_column()
 	created_at: so.Mapped[datetime] = so.mapped_column(default=lambda: datetime.now(timezone.utc))
 	updated_at: so.Mapped[datetime] = so.mapped_column(default=lambda: datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
 

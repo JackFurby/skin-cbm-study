@@ -7,8 +7,8 @@
 
 		<div class="row">
 
-			<div id="ai-prediction" class="bg-white">
-				<div class="container-fluid">
+			<div id="ai-prediction" class="bg-white pt-3">
+				<div class="container-fluid" style="max-width: 1140px;">
 				<div class="row mb-3">
 					<div class="col-3">
 						<div class="row">
@@ -48,20 +48,30 @@
 
 						<div class="col-6" id="explanation_{{ concept_id }}">
 							<div class="card mb-3">
-								<div class="row g-0">
-									<div class="col-md-4">
-										<img class="img-fluid rounded-start" src="{{ url_for('study.get_image', filename=sample_id|string + '/' + concept[1]|string) }}" width="100%">
+								{% if explanation_version == 0 %}
+									<div class="card-body">
+										<p class="card-text">{{ concept[3] }}</p>
+										<input type="hidden" id="{{ concept_id }}-initial" value="{{ concept[2]|round(2) }}">
+										<input type="range" class="form-range" min="0" max="1" step="0.01" value="{{ concept[2]|round(2) }}" id="{{ concept_id }}" name="{{ concept_id }}" onchange="enableBtn('{{ concept_id }}-reset'); updateValue('{{ concept_id }}'); logUpdate('{{ concept_id }}', '{{ sample_id }}', false); predict();">
+										<p><span class="badge rounded-pill bg-secondary" id="{{ concept_id }}-badge">{{ concept[2]|round(2) }}</span></p>
+										<button type="button" class="btn btn-secondary" onclick="resetValue({{ concept_id }})" id="{{ concept_id }}-reset" disabled>Reset</button>
 									</div>
-									<div class="col-md-8">
-										<div class="card-body">
-											<p class="card-text">{{ concept[3] }}</p>
-											<input type="hidden" id="{{ concept_id }}-initial" value="{{ concept[2]|round(2) }}">
-											<input type="range" class="form-range" min="0" max="1" step="0.01" value="{{ concept[2]|round(2) }}" id="{{ concept_id }}" name="{{ concept_id }}" onchange="enableBtn('{{ concept_id }}-reset'); updateValue('{{ concept_id }}'); logUpdate('{{ concept_id }}', '{{ sample_id }}', false); predict();">
-											<p><span class="badge rounded-pill bg-secondary" id="{{ concept_id }}-badge">{{ concept[2]|round(2) }}</span></p>
-											<button type="button" class="btn btn-secondary" onclick="resetValue({{ concept_id }})" id="{{ concept_id }}-reset" disabled>Reset</button>
+								{% elif explanation_version == 1 %}
+									<div class="row g-0">
+										<div class="col-md-4">
+											<img class="img-fluid rounded-start" src="{{ url_for('study.get_image', filename=sample_id|string + '/' + concept[1]|string) }}" width="100%">
+										</div>
+										<div class="col-md-8">
+											<div class="card-body">
+													<p class="card-text">{{ concept[3] }}</p>
+													<input type="hidden" id="{{ concept_id }}-initial" value="{{ concept[2]|round(2) }}">
+													<input type="range" class="form-range" min="0" max="1" step="0.01" value="{{ concept[2]|round(2) }}" id="{{ concept_id }}" name="{{ concept_id }}" onchange="enableBtn('{{ concept_id }}-reset'); updateValue('{{ concept_id }}'); logUpdate('{{ concept_id }}', '{{ sample_id }}', false); predict();">
+													<p><span class="badge rounded-pill bg-secondary" id="{{ concept_id }}-badge">{{ concept[2]|round(2) }}</span></p>
+													<button type="button" class="btn btn-secondary" onclick="resetValue({{ concept_id }})" id="{{ concept_id }}-reset" disabled>Reset</button>
+											</div>
 										</div>
 									</div>
-								</div>
+								{% endif %}
 							</div>
 						</div>
 
@@ -208,7 +218,7 @@
 		var concept_list = [];
 		// add all concepts ids and values to array
 		allExplanaions.forEach(explanation_object => {
-			concept_list.push([explanation_object.id, explanation_object.firstElementChild.firstElementChild.lastElementChild.firstElementChild.children[2].value])
+			concept_list.push([explanation_object.id, document.getElementById(explanation_object.id.split('_')[1]).value])
 		});
 
 		// reorder aray
