@@ -13,6 +13,10 @@ from app import mail
 import random
 
 
+def get_datetime(milliseconds):
+	return datetime.fromtimestamp(milliseconds/1000.0)
+
+
 @bp.route('/', methods=["GET"])
 @bp.route('/study', methods=["GET"])
 def study():
@@ -97,8 +101,8 @@ def samples():
 		sample = Sample(
 			participant_id=int(session["participant_id"]),
 			malignant=True if request.form['submit'] == 'malignant' else False,
-			start_time=int(form.start_time.data),
-			complete_time=round(((datetime.utcnow() - datetime(1970, 1, 1)).total_seconds())*1000)
+			start_time=get_datetime(int(form.start_time.data)),
+			complete_time=get_datetime(round(((datetime.utcnow() - datetime(1970, 1, 1)).total_seconds())*1000))
 		)
 		db.session.add(sample)
 		db.session.commit()
@@ -199,8 +203,8 @@ def log_range_update():
 	action = Action(
 		participant_id=int(session["participant_id"]),
 		type=request.form.get("type"),
-		last_action_time=int(request.form.get("last_action_time")),
-		action_time=int(request.form.get("action_time")),
+		last_action_time=get_datetime(int(request.form.get("last_action_time"))),
+		action_time=get_datetime(int(request.form.get("action_time"))),
 		update_value=int(float(request.form.get("update_value")) * 100),
 		concept_id=int(request.form.get("concept_id")),
 		sample_id=int(request.form.get("sample_id")),
@@ -218,7 +222,7 @@ def log_concept_seen():
 	action = Action(
 		participant_id=int(session["participant_id"]),
 		type=request.form.get("type"),
-		action_time=int(request.form.get("action_time")),
+		action_time=get_datetime(int(request.form.get("action_time"))),
 		concept_id=int(request.form.get("concept_id")),
 		sample_id=int(request.form.get("sample_id"))
 	)
@@ -233,7 +237,7 @@ def log_concept_seen():
 def log_sort_update():
 	action = ConceptSort(
 		participant_id=int(session["participant_id"]),
-		action_time=int(request.form.get("action_time")),
+		action_time=get_datetime(int(request.form.get("action_time"))),
 		update_value=request.form.get("update_value"),
 		sample_id=int(request.form.get("sample_id"))
 	)
