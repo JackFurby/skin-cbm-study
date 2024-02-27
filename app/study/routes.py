@@ -93,21 +93,17 @@ def tutorial():
 
 @bp.route('/samples', methods=['GET', 'POST'])
 def samples():
-	milliseconds = round(((datetime.utcnow() - datetime(1970, 1, 1)).total_seconds())*1000)  # time when sample is shown to participant
-	form = SampleForm(start_time=milliseconds)
+	form = SampleForm()
 	# save participant sample classification
 	if form.validate_on_submit():
 
-		sample = Sample(
-			participant_id=int(session["participant_id"]),
-			malignant=True if request.form['submit'] == 'malignant' else False,
-			start_time=get_datetime(int(form.start_time.data)),
-			complete_time=get_datetime(round(((datetime.utcnow() - datetime(1970, 1, 1)).total_seconds())*1000))
-		)
+		# update db entery with participant selection
+		samples_left = session["samples_left"]
+		sample = db.session.query(Sample).filter_by(participant_id=session["participant_id"], sample_id=samples_left[-1]).first()
+		sample.malignant = True if request.form['submit'] == 'malignant' else False
+		sample.complete_time = get_datetime(round(((datetime.utcnow() - datetime(1970, 1, 1)).total_seconds())*1000))
 		db.session.add(sample)
 		db.session.commit()
-
-		samples_left = session["samples_left"]
 
 		# remove sample from samples_left
 		del samples_left[-1]
@@ -122,9 +118,18 @@ def samples():
 		if len(session["samples_left"]) == 0:  # if all samples seen; end study and go to closing survey
 			return redirect(url_for('study.sample_survey'))
 
-		# remove next sample from list
+		# get sample id
 		samples_left = session["samples_left"]
 		sample_id = samples_left[-1]
+
+		# if sample does not exist in db (first time sample is show to participant) then create db entery
+		if db.session.query(Sample).filter_by(participant_id=session["participant_id"], sample_id=sample_id).first() is None:
+			sample = Sample(
+				participant_id=int(session["participant_id"]),
+				sample_id=samples_left[-1]
+			)
+			db.session.add(sample)
+			db.session.commit()
 
 		# get concept predictions and explanatons
 		concept_preds = []

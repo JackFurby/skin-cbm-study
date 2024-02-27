@@ -83,9 +83,10 @@ class ConceptSort(db.Model):
 class Sample(db.Model):
 	id: so.Mapped[int] = so.mapped_column(primary_key=True)
 	participant_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(Participant.id), index=True)
-	malignant: so.Mapped[bool] = so.mapped_column(sa.Boolean())
-	start_time: so.Mapped[datetime] = so.mapped_column()
-	complete_time: so.Mapped[datetime] = so.mapped_column()
+	sample_id: so.Mapped[int] = so.mapped_column()
+	malignant: so.Mapped[Optional[bool]] = so.mapped_column(sa.Boolean())
+	start_time: so.Mapped[datetime] = so.mapped_column(default=lambda: datetime.now(timezone.utc))
+	complete_time: so.Mapped[Optional[datetime]] = so.mapped_column()
 	created_at: so.Mapped[datetime] = so.mapped_column(default=lambda: datetime.now(timezone.utc))
 	updated_at: so.Mapped[datetime] = so.mapped_column(default=lambda: datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
 
