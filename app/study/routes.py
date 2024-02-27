@@ -100,10 +100,13 @@ def samples():
 		# update db entery with participant selection
 		samples_left = session["samples_left"]
 		sample = db.session.query(Sample).filter_by(participant_id=session["participant_id"], sample_id=samples_left[-1]).first()
-		sample.malignant = True if request.form['submit'] == 'malignant' else False
+		sample.model_malignant = True if form.model_malignant.data == 'malignant' else False
+		sample.participant_malignant = True if request.form['submit'] == 'malignant' else False
 		sample.complete_time = get_datetime(round(((datetime.utcnow() - datetime(1970, 1, 1)).total_seconds())*1000))
 		db.session.add(sample)
 		db.session.commit()
+
+		print(request.form)
 
 		# remove sample from samples_left
 		del samples_left[-1]

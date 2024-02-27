@@ -27,9 +27,8 @@ class DemographicForm(FlaskForm):
 	gender = SelectField('Gender', choices=[("", "Choose..."), ("Male", "male"), ("Female", "female"), ("Other", "other"),], validators=[DataRequired()])
 
 
-# we only need the submit value. This form has no other fields
 class SampleForm(FlaskForm):
-	pass
+	model_malignant = StringField('Model prediction', validators=[DataRequired()])
 
 
 class SurveyForm(FlaskForm):

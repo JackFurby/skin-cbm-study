@@ -83,6 +83,7 @@
 
 			<form action="" method="post">
 				{{ form.hidden_tag() }}
+				{{ form.model_malignant (class_="d-none") }}
 				<div class="d-flex justify-content-center">
 					<button type="submit" name=submit class="btn btn-secondary col-3 mx-2", value="malignant">Malignant</button>
 					<button type="submit" name=submit class="btn btn-secondary col-3 mx-2", value="benign">Benign</button>
@@ -200,6 +201,11 @@
 		} else {
 			document.getElementById("task-out").innerHTML = "malignant";
 		};
+
+		if (document.getElementById("model_malignant").value === "") {
+			console.log(document.getElementById("model_malignant").value);
+			document.getElementById("model_malignant").value = document.getElementById("task-out").innerHTML;   // set inital model prediction
+		}
 	};
 
 	//https://bootstrap-menu.com/detail-fixed-onscroll.html
@@ -254,6 +260,7 @@
 	window.onload = function() {
 		predict();
 		orderConcepts("hl", false);
+		document.getElementById("model_malignant").value = document.getElementById("task-out").innerHTML;
 	};
 
 </script>
