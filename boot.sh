@@ -8,4 +8,4 @@ for run in {1..5}; do
 	echo Deploy command failed, retrying in 5 secs...
 	sleep 5
 done
-exec gunicorn -b 0.0.0.0:5000 --access-logfile - --error-logfile - study:app
+exec gunicorn -b 0.0.0.0:8080 --access-logfile - --error-logfile - study:app
