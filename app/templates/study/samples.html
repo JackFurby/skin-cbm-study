@@ -202,9 +202,9 @@
 			document.getElementById("task-out").innerHTML = "malignant";
 		};
 
+		 // set inital model prediction if it has not been set already
 		if (document.getElementById("model_malignant").value === "") {
-			console.log(document.getElementById("model_malignant").value);
-			document.getElementById("model_malignant").value = document.getElementById("task-out").innerHTML;   // set inital model prediction
+			document.getElementById("model_malignant").value = document.getElementById("task-out").innerHTML;
 		}
 	};
 
@@ -260,7 +260,6 @@
 	window.onload = function() {
 		predict();
 		orderConcepts("hl", false);
-		document.getElementById("model_malignant").value = document.getElementById("task-out").innerHTML;
 	};
 
 </script>

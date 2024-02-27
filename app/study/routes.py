@@ -106,8 +106,6 @@ def samples():
 		db.session.add(sample)
 		db.session.commit()
 
-		print(request.form)
-
 		# remove sample from samples_left
 		del samples_left[-1]
 		session["samples_left"] = samples_left
