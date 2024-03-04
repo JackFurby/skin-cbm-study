@@ -1,6 +1,8 @@
 {% extends "template_parts/base.html" %}
 
 
+
+
 {% block content %}
 <main class="col px-md-4">
 	<div class="bg-white p-3 mt-4">
@@ -9,13 +11,304 @@
 		</div>
 		<div class="">
 
-			<p>How to complete the study + example</p>
-			
-			<a class="btn btn-primary" href="{{ url_for('study.samples') }}" role="button">Samples</a>
+			<div class="d-grid col-6 mx-auto mb-5">
+				<button type="button" class="btn btn-primary btn-lg mx-auto" onclick="startTutorial()">Start tutorial</button>
+			</div>
+
+			<hr />
+
+			<div class="row" id="sample-layout">
+
+				<div id="ai-prediction" class="bg-white pt-3">
+					<div class="container-fluid" style="max-width: 1140px;">
+					<div class="row mb-3">
+						<div class="col-3">
+							<div class="row" id="input-image">
+								<div class="col-12 m-sm-auto m-md-0">
+									<img class="mb-3" src="{{ url_for('study.get_image_tutorial', filename=sample_id|string + '/input.png') }}" width="100%" id="model_input" style="max-width: 369px;">
+								</div>
+							</div>
+						</div>
+						<div class="col-9">
+							<div class="card border-info mb-3" id="model-output">
+								<div class="card-header">
+								AI prediction
+								</div>
+								<div class="card-body">
+									<p class="card-text" id="task-out"></p>
+								</div>
+							</div>
+						</div>
+				</div>
+				</div>
+				</div>
+
+				<button id="concept-toggle" class="btn btn-primary col-4 mx-auto mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#collapseConcepts" aria-expanded="false" aria-controls="collapseConcepts">
+					View/hide concepts
+				</button>
+				<div class="collapse" id="collapseConcepts" style="transition: 0.8s;">
+					<h4>Predicted concepts</h4>
+
+					<label for="concept_order" class="form-label">Concept order</label>
+					<select id="concept-order" class="form-select mb-3" aria-label="concept_order" id="concept_order" onChange="orderConcepts(this.options[this.selectedIndex].value, true)">
+						<option selected value="hl">Highest to lowest concept value</option>
+						<option value="lh">Lowest to highest concept value</option>
+					</select>
+					<div class="row" id="all_explanations">
+						{% for concept in concept_out %}
+							{% set concept_id = concept[0] %}
+
+							<div class="col-6" id="explanation_{{ concept_id }}">
+								<div class="card mb-3">
+									{% if explanation_version == 0 %}
+										<div class="card-body">
+											<p class="card-text">{{ concept[3] }}</p>
+											<input type="hidden" id="{{ concept_id }}-initial" value="{{ concept[2]|round(2) }}">
+											<input type="range" class="form-range" min="0" max="1" step="0.01" value="{{ concept[2]|round(2) }}" id="{{ concept_id }}" name="{{ concept_id }}" onchange="enableBtn('{{ concept_id }}-reset'); updateValue('{{ concept_id }}'); predict();">
+											<p><span class="badge rounded-pill bg-secondary" id="{{ concept_id }}-badge">{{ concept[2]|round(2) }}</span></p>
+											<button type="button" class="btn btn-secondary" onclick="resetValue({{ concept_id }})" id="{{ concept_id }}-reset" disabled>Reset</button>
+										</div>
+									{% elif explanation_version == 1 %}
+										<div class="row g-0">
+											<div class="col-md-4">
+												<img id="image_saliency_{{ concept_id }}" class="img-fluid rounded-start" src="{{ url_for('study.get_image_tutorial', filename=sample_id|string + '/' + concept[1]|string) }}" width="100%">
+											</div>
+											<div class="col-md-8">
+												<div class="card-body">
+														<p id="concept_name_{{ concept_id }}" class="card-text">{{ concept[3] }}</p>
+														<input type="hidden" id="{{ concept_id }}-initial" value="{{ concept[2]|round(2) }}">
+														<input type="range" class="form-range" min="0" max="1" step="0.01" value="{{ concept[2]|round(2) }}" id="{{ concept_id }}" name="{{ concept_id }}" onchange="enableBtn('{{ concept_id }}-reset'); updateValue('{{ concept_id }}'); predict();">
+														<p><span class="badge rounded-pill bg-secondary" id="{{ concept_id }}-badge">{{ concept[2]|round(2) }}</span></p>
+														<button type="button" class="btn btn-secondary" onclick="resetValue({{ concept_id }})" id="{{ concept_id }}-reset" disabled>Reset</button>
+												</div>
+											</div>
+										</div>
+									{% endif %}
+								</div>
+							</div>
+
+						{% endfor %}
+					</div>
+				</div>
+
+				<P class="h4 text-center">Please label the sample</p>
+
+					<div class="d-flex justify-content-center" id="sample-classification">
+						<button type="submit" name=submit class="btn btn-secondary col-3 mx-2" value="malignant">Malignant</button>
+						<button type="submit" name=submit class="btn btn-secondary col-3 mx-2" value="benign">Benign</button>
+					</div>
+			</div>
+
+			<hr />
+
+			<div class="d-grid col-6 mx-auto mt-5">
+				<a class="btn btn-primary btn-lg mx-auto" href="{{ url_for('study.samples') }}" id="continue_to_study" role="button">Contine to study</a>
+			</div>
 
 		</div>
 	</div>
 
 </main>
+
+<script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.16.3/dist/ort.min.js"></script>
+
+<script>
+
+	var intro = introJs();
+	intro.setOptions({
+		steps: [{
+			title: 'Welcome',
+			intro: 'Thank you for taking part in this study.'
+		},
+		{
+			title: 'Study aim',
+			intro: 'We have created an artificial agent to help you classify skin diseases from images as either <b>malignant</b> or <b>benign</b>. The artificial agent is capable of explaining it\'s prediction.'
+		},
+		{
+			title: 'Study aim',
+			intro: 'We are measuring the effect these explanations have on you completing the task.'
+		},
+		{
+			element: document.getElementById('sample-layout'),
+			intro: 'The study will use this layout where you will be shown a series of sample images.'
+		},
+		{
+			element: document.getElementById('sample-classification'),
+			intro: 'When you have evaluated the sample you will be asked to label the sample.'
+		},
+		{
+			element: document.getElementById('ai-prediction'),
+			intro: 'At the top of the page, you will find information about the sample and the artificial agent\'s prediction.'
+		},
+		{
+			title: 'Sample image',
+			element: document.getElementById('input-image'),
+			intro: 'Sample images are located here.'
+		},
+		{
+			title: 'AI prediction',
+			element: document.getElementById('model-output'),
+			intro: 'And the artifical agent\'s prediction here.'
+		},
+		{
+			title: 'Show and hide concepts',
+			element: document.getElementById('concept-toggle'),
+			intro: 'To classify a sample the artificial agent first predicts a series of concepts which are then used for the sample classification. These can be shown or hidden to reveal why the artificial agent classified the sample as malignant or benign.'
+		},
+		{
+			title: 'Concepts',
+			intro: 'Concepts represent visual signs we may see in a sample image.'
+		},
+		{
+			title: 'Concept order',
+			element: document.getElementById('concept-order'),
+			intro: 'Concepts can be ordered in ascending or descending order based on the concept value. By default, it is ordered in descending order.'
+		},
+		{
+			title: 'Concept explanation',
+			element: document.getElementById('explanation_17'),
+			intro: 'The artificial agent predicts 22 concepts.'
+		},
+		{
+			title: 'Explanation name',
+			element: document.getElementById('concept_name_17'),
+			intro: 'The concept name uses a standard lexicon to describe physical examination finds.'
+		},
+		{
+			title: 'Explanation value',
+			element: document.getElementById('17-badge'),
+			intro: 'The artificial agent predicts a value for each concept between 0 and 1. Any value of 0.5 and over means the artificial agent predicted the concept as present, and a value below 0.5 is not present. This value can be seen as how confident the model was. A value close to 0 or 1 is very confident, whereas a value close to 0.5 is not confident.'
+		},
+		{
+			title: 'Explanation saliency',
+			element: document.getElementById('image_saliency_17'),
+			intro: 'Each concept explanation has an image which shows the saliency of what the artificial agent used to make the prediction. Red highlights pixels contributing towards the concept prediction and blue highlights pixels against the concept prediction.'
+		},
+		{
+			title: 'Interventions',
+			element: document.getElementById('17'),
+			intro: 'You can modify the concept prediction if you belive it is incorrect or wish to see what the artificial agent would predict if it were different.'
+		},
+		{
+			title: 'Interventions',
+			element: document.getElementById('17'),
+			intro: 'In this example, we have updated the concept value for the concept "White".'
+		},
+		{
+			title: 'Interventions continued',
+			element: document.getElementById('model-output'),
+			intro: 'By changing the concept prediction, the artificial agent classification will be updated. In this case, there was no change.'
+		},
+		{
+			title: 'Reset concept predictions',
+			element: document.getElementById('17-reset'),
+			intro: 'If we would like to reset a concept prediction then the reset button can be pressed.'
+		},
+		{
+			title: 'Contine to study',
+			element: document.getElementById('continue_to_study'),
+			intro: 'You can continue to the study by pressing the continue button.'
+		},]
+	});
+
+	intro.onbeforechange(function () {
+		if (this._currentStep === 8) {
+			document.getElementById('collapseConcepts').classList.add('show');
+		} else if (this._currentStep === 16) {
+			document.getElementById('17').value = 0.15;
+			updateValue('17');
+			enableBtn('17-reset')
+			predict();
+		}
+	});
+
+	function startTutorial() {
+		intro.start();
+	};
+
+
+	// reset concept value to initial on button click
+	function resetValue(input_id) {
+		initial_value = document.getElementById(input_id + "-initial").value;
+		document.getElementById(input_id).value = initial_value;
+		document.getElementById(input_id + "-reset").disabled = true;
+		document.getElementById(input_id + "-badge").innerHTML = initial_value;
+		predict();
+	};
+
+	// enabe reset button
+	function enableBtn(btn_id) {
+		document.getElementById(btn_id).disabled = false;
+	};
+
+	// update readout for slider value and update concept image
+	function updateValue(input_id) {
+		new_value = document.getElementById(input_id).value;
+		document.getElementById(input_id + "-badge").innerHTML = new_value;
+	};
+
+	const allExplanaions = document.querySelectorAll('[id^="explanation_"]');
+
+	// predict downstrea task from concept values
+	async function predict() {
+		// load model
+		const session = await ort.InferenceSession.create("{{ url_for('study.static', filename=model_name) }}");
+
+		// get concpet values and turn into tensor
+		var concept_arr = [];
+		{% for concept in concept_out %}
+			concept_arr.push(document.getElementById("{{ concept[0] }}").value);
+		{% endfor %}
+		const concept_vec = new Float32Array(concept_arr);
+		const tensorA = new ort.Tensor('float32', concept_vec, [1, 22]);
+
+		// prepare feed for models. Key is the model input name
+		const feeds = { "onnx::Gemm_0": tensorA };
+
+		// get downstream task predictions
+		const results = await session.run(feeds);
+
+		// Get index of highest value in downsream task predictions
+		const task_output = results["7"].data;
+		var maxNum = Math.max.apply(null, task_output);
+		var index = task_output.indexOf(maxNum);
+
+		// update task out prediction displayed
+		if (index <= 0) {
+			document.getElementById("task-out").innerHTML = "benign";
+		} else {
+			document.getElementById("task-out").innerHTML = "malignant";
+		};
+	};
+
+	// reorder concept explanations
+	function orderConcepts(orderby) {
+		var concept_list = [];
+		// add all concepts ids and values to array
+		allExplanaions.forEach(explanation_object => {
+			concept_list.push([explanation_object.id, document.getElementById(explanation_object.id.split('_')[1]).value])
+		});
+
+		// reorder aray
+		if (orderby == "lh") {
+			concept_list.sort(function(a,b){return a[1].localeCompare(b[1]);});
+		} else {  // hl
+			concept_list.sort(function(a,b){return a[1].localeCompare(b[1]);}).reverse();
+		}
+
+		// add each explanation to the div all_explanations in order of concept_list
+		container = document.getElementById("all_explanations")
+		concept_list.forEach(explanation => {
+			container.appendChild(document.getElementById(explanation[0]))
+		});
+	};
+
+	// run all functions for the inital page load
+	window.onload = function() {
+		predict();
+		orderConcepts("hl");
+	};
+
+</script>
 
 {% endblock %}

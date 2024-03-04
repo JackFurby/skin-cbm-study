@@ -88,7 +88,18 @@ def survey():
 
 @bp.route('/tutorial')
 def tutorial():
-	return render_template('study/tutorial.html', title='Tutorial')
+	# get concept predictions and explanatons
+	concept_preds = []
+	# open txt file with concept predictions and concept explanation file names
+	with bp.open_resource(f"static/tutorial/out.txt") as f:
+		content = (f.read().decode('latin1').strip()).split("\n")
+		for line in content:
+			concept = line.split(" ")
+			concept_preds.append((int(concept[0].strip()), concept[1].strip(), float(concept[2].strip()), concept[3].strip()))  # concept index, concept explanation file name, concept prediction, concept string
+
+	model_name = "CtoY_onnx_model.onnx"
+
+	return render_template('study/tutorial.html', title='Tutorial', concept_out=concept_preds, model_name=model_name, explanation_version=session["explanation_version"])
 
 
 @bp.route('/samples', methods=['GET', 'POST'])
@@ -201,6 +212,11 @@ def close():
 @bp.route('/get_image/<path:filename>')
 def get_image(filename):
 	return send_from_directory(bp.static_folder, f"samples/{filename}")
+
+
+@bp.route('/get_image_tutorial/<path:filename>')
+def get_image_tutorial(filename):
+	return send_from_directory(bp.static_folder, f"tutorial/{filename}")
 
 
 # log concept prediction changes
