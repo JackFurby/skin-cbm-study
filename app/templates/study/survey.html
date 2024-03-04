@@ -5,7 +5,7 @@
 <main class="col px-md-4">
 	<div class="bg-white p-3 mt-4">
 		<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3">
-			<h1 class="h2">Survey</h1>
+			<h1 class="h2">Demographic survey</h1>
 		</div>
 		<div class="">
 
@@ -13,10 +13,10 @@
 				{{ form.hidden_tag() }}
 
 				<div class="row">
-					<div class="col-2">
+					<div class="col-4">
 						<p>I am an experienced at identifying skin disease from images</p>
 					</div>
-					<div class="col-10">
+					<div class="col-8">
 					{% for subfield in form.skin_experience %}
 						<div class="form-check form-check-inline">
 							{{ subfield (class_="form-check-input") }}
@@ -27,10 +27,10 @@
 				</div>
 
 				<div class="row">
-					<div class="col-2">
+					<div class="col-4">
 						<p>I am experienced in computer science / computing</p>
 					</div>
-					<div class="col-10">
+					<div class="col-8">
 						{% for subfield in form.computer_experience %}
 							<div class="form-check form-check-inline">
 								{{ subfield (class_="form-check-input") }}

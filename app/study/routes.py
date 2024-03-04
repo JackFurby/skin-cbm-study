@@ -71,7 +71,7 @@ def survey():
 			db.session.commit()
 
 			participant = Participant(
-				explanation_version=1  #<<<<<<<<<<<<<<<<<<<<<<<<<< How should this be set?
+				explanation_version=0  #<<<<<<<<<<<<<<<<<<<<<<<<<< How should this be set?
 			)
 			db.session.add(participant)
 			db.session.commit()

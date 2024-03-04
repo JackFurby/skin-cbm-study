@@ -62,7 +62,7 @@
 								<div class="card mb-3">
 									{% if explanation_version == 0 %}
 										<div class="card-body">
-											<p class="card-text">{{ concept[3] }}</p>
+											<p id="concept_name_{{ concept_id }}" class="card-text">{{ concept[3] }}</p>
 											<input type="hidden" id="{{ concept_id }}-initial" value="{{ concept[2]|round(2) }}">
 											<input type="range" class="form-range" min="0" max="1" step="0.01" value="{{ concept[2]|round(2) }}" id="{{ concept_id }}" name="{{ concept_id }}" onchange="enableBtn('{{ concept_id }}-reset'); updateValue('{{ concept_id }}'); predict();">
 											<p><span class="badge rounded-pill bg-secondary" id="{{ concept_id }}-badge">{{ concept[2]|round(2) }}</span></p>
@@ -179,11 +179,13 @@
 			element: document.getElementById('17-badge'),
 			intro: 'The artificial agent predicts a value for each concept between 0 and 1. Any value of 0.5 and over means the artificial agent predicted the concept as present, and a value below 0.5 is not present. This value can be seen as how confident the model was. A value close to 0 or 1 is very confident, whereas a value close to 0.5 is not confident.'
 		},
+		{% if explanation_version == 1 %}
 		{
 			title: 'Explanation saliency',
 			element: document.getElementById('image_saliency_17'),
 			intro: 'Each concept explanation has an image which shows the saliency of what the artificial agent used to make the prediction. Red highlights pixels contributing towards the concept prediction and blue highlights pixels against the concept prediction.'
 		},
+		{% endif %}
 		{
 			title: 'Interventions',
 			element: document.getElementById('17'),
@@ -211,10 +213,16 @@
 		},]
 	});
 
+	{% if explanation_version == 0 %}
+		const update_step = 15
+	{% elif explanation_version == 1 %}
+		const update_step = 16
+	{% endif %}
+
 	intro.onbeforechange(function () {
 		if (this._currentStep === 8) {
 			document.getElementById('collapseConcepts').classList.add('show');
-		} else if (this._currentStep === 16) {
+		} else if (this._currentStep === update_step) {
 			document.getElementById('17').value = 0.15;
 			updateValue('17');
 			enableBtn('17-reset')
