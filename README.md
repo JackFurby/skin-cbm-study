@@ -86,3 +86,43 @@ export FLASK_ENV=development
     ```sh
     flask --app app --debug run
     ```
+
+
+
+Deploying the application
+
+It is assumed you have a server setup. We used Ubuntu 22.04
+
+1. Update server and install software
+
+  ```sh
+  suso apt-get update
+  sudo apt-get upgrade
+  sudo apt install gunicorn libsm6 libxext6 libgl1 ffmpeg libxrender-dev pymysql
+  ```
+
+2. Clone repository to your server
+
+  ```sh
+  git clone https://github.com/JackFurby/skin-cbm-study.git
+  cd skin-cbm-study
+  ```
+
+3. Install pip packages
+
+  ```sh
+  pip3 install -r requirements.txt
+  pip3 install pymysql
+  ```
+4. Set environmental variables
+
+  ```sh
+  export DATABASE_URL='mysql+pymysql://<USER_NAME>:<PASSWORD>@<DB_URL>:3306/<DB_NAME>'
+  source ~/.bash_profile
+  ```
+
+5. Start app
+
+  *Note: this should be started such that it will run when you exit the terminal e.g. with tmux*
+
+  gunicorn -b 0.0.0.0:8080 study:app
