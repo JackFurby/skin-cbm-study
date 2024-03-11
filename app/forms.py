@@ -1,5 +1,5 @@
 from wtforms import StringField, BooleanField, RadioField, IntegerField, SelectField, HiddenField, TextAreaField, EmailField
-from wtforms.validators import DataRequired, length
+from wtforms.validators import DataRequired, length, NumberRange
 from flask import flash
 from flask_wtf import FlaskForm
 from werkzeug.local import LocalProxy
@@ -23,7 +23,7 @@ class ConsentForm(FlaskForm):
 class DemographicForm(FlaskForm):
 	skin_experience = RadioField('I am an experienced at identifying skin disease from images', choices=["Strongly agree", "agree", "Neutral", "Disagree", "Strongly Disagree"], validators=[DataRequired()])
 	computer_experience = RadioField('I am experienced in computer science / computing', choices=["Strongly agree", "agree", "Neutral", "Disagree", "Strongly Disagree"], validators=[DataRequired()])
-	age = IntegerField('Age', validators=[DataRequired()])
+	age = IntegerField('Age', validators=[DataRequired(), NumberRange(min=18)])
 	gender = SelectField('Gender', choices=[("", "Choose..."), ("Male", "male"), ("Female", "female"), ("Other", "other"),], validators=[DataRequired()])
 
 

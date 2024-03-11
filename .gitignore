@@ -162,3 +162,5 @@ cython_debug/
 
 # extra
 app.db
+skin-study.pub
+skin-study
