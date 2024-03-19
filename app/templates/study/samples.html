@@ -50,7 +50,15 @@
 							<div class="card mb-3">
 								{% if explanation_version == 0 %}
 									<div class="card-body">
-										<p class="card-text">{{ concept[3] }}</p>
+										<div class="d-flex justify-content-between mb-2">
+											<p class="card-text">{{ concept[3] }}</p>
+											<button class="btn btn-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDesc_{{ concept_id }}" aria-expanded="false" aria-controls="collapseDesc_{{ concept_id }}">
+												<i class="bi bi-question-circle-fill"></i>
+											</button>
+										</div>
+										<div class="collapse border border-info-subtle p-1 rounded" id="collapseDesc_{{ concept_id }}">
+											<p>{{ concept[4] }}</p>
+										</div>
 										<input type="hidden" id="{{ concept_id }}-initial" value="{{ concept[2]|round(2) }}">
 										<input type="range" class="form-range" min="0" max="1" step="0.01" value="{{ concept[2]|round(2) }}" id="{{ concept_id }}" name="{{ concept_id }}" onchange="enableBtn('{{ concept_id }}-reset'); updateValue('{{ concept_id }}'); logUpdate('{{ concept_id }}', '{{ sample_id }}', false); predict();">
 										<p><span class="badge rounded-pill bg-secondary" id="{{ concept_id }}-badge">{{ concept[2]|round(2) }}</span></p>
@@ -63,7 +71,15 @@
 										</div>
 										<div class="col-md-8">
 											<div class="card-body">
-													<p class="card-text">{{ concept[3] }}</p>
+													<div class="d-flex justify-content-between mb-2">
+														<p class="card-text">{{ concept[3] }}</p>
+														<button class="btn btn-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDesc_{{ concept_id }}" aria-expanded="false" aria-controls="collapseDesc_{{ concept_id }}">
+															<i class="bi bi-question-circle-fill"></i>
+														</button>
+													</div>
+													<div class="collapse border border-info-subtle p-1 rounded" id="collapseDesc_{{ concept_id }}">
+														<p>{{ concept[4] }}</p>
+													</div>
 													<input type="hidden" id="{{ concept_id }}-initial" value="{{ concept[2]|round(2) }}">
 													<input type="range" class="form-range" min="0" max="1" step="0.01" value="{{ concept[2]|round(2) }}" id="{{ concept_id }}" name="{{ concept_id }}" onchange="enableBtn('{{ concept_id }}-reset'); updateValue('{{ concept_id }}'); logUpdate('{{ concept_id }}', '{{ sample_id }}', false); predict();">
 													<p><span class="badge rounded-pill bg-secondary" id="{{ concept_id }}-badge">{{ concept[2]|round(2) }}</span></p>
@@ -254,6 +270,39 @@
 			});
 		};
 	};
+
+	{% for concept in concept_out %}
+		{% set concept_id = concept[0] %}
+		$('#collapseDesc_{{ concept_id }}').on('show.bs.collapse', function () {
+			action_time = Date.now();
+
+			$.ajax({
+				type:'POST',
+				url:'{{ url_for('study.toggle_concept_desc') }}',
+				data:{
+					type: "concept description show",
+					action_time: action_time,
+					concept_id: {{ concept_id }},
+					sample_id: sample_id,
+				}
+			});
+		})
+
+		$('#collapseDesc_{{ concept_id }}').on('hidden.bs.collapse', function () {
+			action_time = Date.now();
+
+			$.ajax({
+				type:'POST',
+				url:'{{ url_for('study.toggle_concept_desc') }}',
+				data:{
+					type: "concept description hide",
+					action_time: action_time,
+					concept_id: {{ concept_id }},
+					sample_id: sample_id,
+				}
+			});
+		})
+	{% endfor %}
 
 	// run all functions for the inital page load
 	window.onload = function() {

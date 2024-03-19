@@ -150,7 +150,13 @@ def samples():
 			content = (f.read().decode('latin1').strip()).split("\n")
 			for line in content:
 				concept = line.split(" ")
-				concept_preds.append((int(concept[0].strip()), concept[1].strip(), float(concept[2].strip()), concept[3].strip()))  # concept index, concept explanation file name, concept prediction, concept string
+				concept_preds.append([int(concept[0].strip()), concept[1].strip(), float(concept[2].strip()), concept[3].strip()])  # concept index, concept explanation file name, concept prediction, concept string
+
+		# open txt file with concept predictions and concept explanation file names
+		with bp.open_resource(f"static/samples/concept_desc.txt") as f:
+			content = (f.read().decode('latin1').strip()).split("\n")
+			for idx, line in enumerate(content):
+				concept_preds[idx].append(line)  # Add concept description to concept item
 
 		model_name = "CtoY_onnx_model.onnx"
 
@@ -261,6 +267,22 @@ def log_sort_update():
 		participant_id=int(session["participant_id"]),
 		action_time=get_datetime(int(request.form.get("action_time"))),
 		update_value=request.form.get("update_value"),
+		sample_id=int(request.form.get("sample_id"))
+	)
+	db.session.add(action)
+	db.session.commit()
+
+	return jsonify("Action logged")
+
+
+# log when a participants shows a concept description
+@bp.route('/toggle_concept_desc/', methods=['POST'])
+def toggle_concept_desc():
+	action = Action(
+		participant_id=int(session["participant_id"]),
+		type=request.form.get("type"),
+		action_time=get_datetime(int(request.form.get("action_time"))),
+		concept_id=int(request.form.get("concept_id")),
 		sample_id=int(request.form.get("sample_id"))
 	)
 	db.session.add(action)
