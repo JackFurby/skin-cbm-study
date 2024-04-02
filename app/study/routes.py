@@ -158,7 +158,7 @@ def samples():
 			for idx, line in enumerate(content):
 				concept_preds[idx].append(line)  # Add concept description to concept item
 
-		model_name = "CtoY_onnx_model.onnx"
+		model_name = "CtoY_dense_onnx_model.onnx"
 
 		"""
 		explanation versions
