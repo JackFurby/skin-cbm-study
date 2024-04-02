@@ -87,11 +87,11 @@ export FLASK_ENV=development
     flask --app app --debug run
     ```
 
-
-
 Deploying the application
 
 It is assumed you have a server setup. We used Ubuntu 22.04
+
+connect to server: `ssh -i ./skin-study ubuntu@131.251.172.175`
 
 1. Update server and install software
 
