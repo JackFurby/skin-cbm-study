@@ -212,15 +212,16 @@
 
 		// update task out prediction displayed
 		if (index <= 0) {
-			document.getElementById("task-out").innerHTML = "benign";
+			var model_out = "benign"
 		} else {
-			document.getElementById("task-out").innerHTML = "malignant";
+			var model_out = "malignant"
 		};
+		document.getElementById("task-out").innerHTML = model_out;
 
 		 // set inital model prediction if it has not been set already
 		if (document.getElementById("model_malignant").value === "") {
-			document.getElementById("model_malignant").value = document.getElementById("task-out").innerHTML;
-		}
+			document.getElementById("model_malignant").value = model_out;
+		};
 	};
 
 	//https://bootstrap-menu.com/detail-fixed-onscroll.html
