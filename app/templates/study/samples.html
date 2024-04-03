@@ -99,7 +99,6 @@
 
 			<form action="" method="post">
 				{{ form.hidden_tag() }}
-				{{ form.model_malignant (class_="d-none") }}
 				<div class="d-flex justify-content-center">
 					<button type="submit" name=submit class="btn btn-secondary col-3 mx-2", value="malignant">Malignant</button>
 					<button type="submit" name=submit class="btn btn-secondary col-3 mx-2", value="benign">Benign</button>
@@ -218,10 +217,15 @@
 		};
 		document.getElementById("task-out").innerHTML = model_out;
 
-		 // set inital model prediction if it has not been set already
-		if (document.getElementById("model_malignant").value === "") {
-			document.getElementById("model_malignant").value = model_out;
-		};
+		// log model prediction (will only update db on first log)
+		$.ajax({
+			type:'POST',
+			url:'{{ url_for('study.model_prediction') }}',
+			data:{
+				sample_id: sample_id,
+				model_malignant: model_out,
+			}
+		});
 	};
 
 	//https://bootstrap-menu.com/detail-fixed-onscroll.html

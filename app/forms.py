@@ -28,7 +28,7 @@ class DemographicForm(FlaskForm):
 
 
 class SampleForm(FlaskForm):
-	model_malignant = StringField('Model prediction', validators=[DataRequired()])
+	pass
 
 
 class SurveyForm(FlaskForm):

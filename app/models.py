@@ -92,7 +92,7 @@ class Sample(db.Model):
 	updated_at: so.Mapped[datetime] = so.mapped_column(default=lambda: datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
 
 	def __repr__(self):
-		return f'<Sample {self.id}, {self.participant_id}, {self.malignant}, {self.start_time}, {self.complete_time}>'
+		return f'<Sample {self.id}, {self.participant_id}, {self.participant_malignant}, {self.model_malignant}, {self.start_time}, {self.complete_time}>'
 
 
 class Survey(db.Model):

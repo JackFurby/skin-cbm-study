@@ -111,7 +111,6 @@ def samples():
 		# update db entery with participant selection
 		samples_left = session["samples_left"]
 		sample = db.session.query(Sample).filter_by(participant_id=session["participant_id"], sample_id=samples_left[-1]).first()
-		sample.model_malignant = True if form.model_malignant.data == 'malignant' else False
 		sample.participant_malignant = True if request.form['submit'] == 'malignant' else False
 		sample.complete_time = get_datetime(round(((datetime.utcnow() - datetime(1970, 1, 1)).total_seconds())*1000))
 		db.session.add(sample)
@@ -172,6 +171,26 @@ def samples():
 		return render_template('study/samples.html', title='CBM Study', sample_id=sample_id, concept_out=concept_preds, form=form, model_name=model_name, explanation_version=session["explanation_version"])
 	else:
 		return redirect(url_for('study.survey'))
+
+
+# log what the model predicts for the downstream task (discard the log if the value has already been set)
+@bp.route('/model_prediction/', methods=['POST'])
+def model_prediction():
+
+	sample = db.session.query(Sample).filter_by(participant_id=session["participant_id"], sample_id=request.form.get("sample_id")).first()
+	if sample != None:
+		if sample.model_malignant == None:
+			sample.model_malignant = True if request.form.get("model_malignant") == 'malignant' else False
+			db.session.add(sample)
+			db.session.commit()
+			print("done", sample)
+			return jsonify("Action logged")
+		else:  # value has already been set. Do not update.
+			print("done_1", sample)
+			return jsonify("Action logged")
+	else:
+		return jsonify("No action to log")
+		print("done_2")
 
 
 @bp.route('/sample_survey', methods=['GET', 'POST'])
