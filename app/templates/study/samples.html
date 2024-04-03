@@ -60,7 +60,7 @@
 											<p>{{ concept[4] }}</p>
 										</div>
 										<input type="hidden" id="{{ concept_id }}-initial" value="{{ concept[2]|round(2) }}">
-										<input type="range" class="form-range" min="0" max="1" step="0.01" value="{{ concept[2]|round(2) }}" id="{{ concept_id }}" name="{{ concept_id }}" onchange="enableBtn('{{ concept_id }}-reset'); updateValue('{{ concept_id }}'); logUpdate('{{ concept_id }}', '{{ sample_id }}', false); predict();">
+										<input type="range" class="form-range" min="0" max="1" step="0.01" value="{{ concept[2]|round(2) }}" id="{{ concept_id }}" name="{{ concept_id }}" onchange="enableBtn('{{ concept_id }}-reset'); updateValue('{{ concept_id }}'); logUpdate('{{ concept_id }}', '{{ sample_id }}', false);">
 										<p><span class="badge rounded-pill bg-secondary" id="{{ concept_id }}-badge">{{ concept[2]|round(2) }}</span></p>
 										<button type="button" class="btn btn-secondary" onclick="resetValue({{ concept_id }})" id="{{ concept_id }}-reset" disabled>Reset</button>
 									</div>
@@ -81,7 +81,7 @@
 														<p>{{ concept[4] }}</p>
 													</div>
 													<input type="hidden" id="{{ concept_id }}-initial" value="{{ concept[2]|round(2) }}">
-													<input type="range" class="form-range" min="0" max="1" step="0.01" value="{{ concept[2]|round(2) }}" id="{{ concept_id }}" name="{{ concept_id }}" onchange="enableBtn('{{ concept_id }}-reset'); updateValue('{{ concept_id }}'); logUpdate('{{ concept_id }}', '{{ sample_id }}', false); predict();">
+													<input type="range" class="form-range" min="0" max="1" step="0.01" value="{{ concept[2]|round(2) }}" id="{{ concept_id }}" name="{{ concept_id }}" onchange="enableBtn('{{ concept_id }}-reset'); updateValue('{{ concept_id }}'); logUpdate('{{ concept_id }}', '{{ sample_id }}', false);">
 													<p><span class="badge rounded-pill bg-secondary" id="{{ concept_id }}-badge">{{ concept[2]|round(2) }}</span></p>
 													<button type="button" class="btn btn-secondary" onclick="resetValue({{ concept_id }})" id="{{ concept_id }}-reset" disabled>Reset</button>
 											</div>
@@ -126,7 +126,6 @@
 		document.getElementById(input_id + "-reset").disabled = true;
 		document.getElementById(input_id + "-badge").innerHTML = initial_value;
 		logUpdate(input_id, sample_id, true);
-		predict();
 	};
 
 	// enabe reset button
@@ -141,9 +140,11 @@
 	};
 
 	// log user changes to concept predictions
-	function logUpdate(concept_id, sample_id, reset_pressed) {
+	async function logUpdate(concept_id, sample_id, reset_pressed) {
 
 		action_time = Date.now();
+
+		const model_pred = await predict();
 
 		$.ajax({
 			type:'POST',
@@ -156,6 +157,7 @@
 				concept_id: concept_id,
 				sample_id: sample_id,
 				reset_pressed: reset_pressed,
+				model_malignant: model_pred
 			}
 		});
 
@@ -226,6 +228,8 @@
 				model_malignant: model_out,
 			}
 		});
+
+		return model_out
 	};
 
 	//https://bootstrap-menu.com/detail-fixed-onscroll.html
@@ -311,7 +315,7 @@
 
 	// run all functions for the inital page load
 	window.onload = function() {
-		predict();
+		var model_pred = predict();
 		orderConcepts("hl", false);
 	};
 

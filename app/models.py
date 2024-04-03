@@ -60,11 +60,12 @@ class Action(db.Model):
 	concept_id: so.Mapped[int] = so.mapped_column()
 	sample_id: so.Mapped[int] = so.mapped_column()
 	reset_pressed: so.Mapped[Optional[bool]] = so.mapped_column(sa.Boolean())
+	model_malignant: so.Mapped[Optional[bool]] = so.mapped_column(sa.Boolean())
 	created_at: so.Mapped[datetime] = so.mapped_column(default=lambda: datetime.now(timezone.utc))
 	updated_at: so.Mapped[datetime] = so.mapped_column(default=lambda: datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
 
 	def __repr__(self):
-		return f'<Action {self.id}, {self.participant_id}, {self.type}, {self.last_action_time}, {self.action_time}, {self.update_value}, {self.concept_id}, {self.sample_id}, {self.reset_pressed}>'
+		return f'<Action {self.id}, {self.participant_id}, {self.type}, {self.last_action_time}, {self.action_time}, {self.update_value}, {self.concept_id}, {self.sample_id}, {self.reset_pressed}, {self.model_malignant}>'
 
 
 class ConceptSort(db.Model):

@@ -97,7 +97,7 @@ def tutorial():
 			concept = line.split(" ")
 			concept_preds.append((int(concept[0].strip()), concept[1].strip(), float(concept[2].strip()), concept[3].strip()))  # concept index, concept explanation file name, concept prediction, concept string
 
-	model_name = "CtoY_onnx_model.onnx"
+	model_name = "CtoY_dense_onnx_model.onnx"
 
 	return render_template('study/tutorial.html', title='Tutorial', concept_out=concept_preds, model_name=model_name, explanation_version=session["explanation_version"])
 
@@ -176,21 +176,17 @@ def samples():
 # log what the model predicts for the downstream task (discard the log if the value has already been set)
 @bp.route('/model_prediction/', methods=['POST'])
 def model_prediction():
-
 	sample = db.session.query(Sample).filter_by(participant_id=session["participant_id"], sample_id=request.form.get("sample_id")).first()
 	if sample != None:
 		if sample.model_malignant == None:
 			sample.model_malignant = True if request.form.get("model_malignant") == 'malignant' else False
 			db.session.add(sample)
 			db.session.commit()
-			print("done", sample)
 			return jsonify("Action logged")
 		else:  # value has already been set. Do not update.
-			print("done_1", sample)
 			return jsonify("Action logged")
 	else:
 		return jsonify("No action to log")
-		print("done_2")
 
 
 @bp.route('/sample_survey', methods=['GET', 'POST'])
@@ -255,7 +251,8 @@ def log_range_update():
 		update_value=int(float(request.form.get("update_value")) * 100),
 		concept_id=int(request.form.get("concept_id")),
 		sample_id=int(request.form.get("sample_id")),
-		reset_pressed=True if request.form.get("reset_pressed") == 'true' else False
+		reset_pressed=True if request.form.get("reset_pressed") == 'true' else False,
+		model_malignant=True if request.form.get("model_malignant") == 'malignant' else False
 	)
 	db.session.add(action)
 	db.session.commit()
