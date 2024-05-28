@@ -47,7 +47,7 @@ class Participant(db.Model):
 	updated_at: so.Mapped[datetime] = so.mapped_column(default=lambda: datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
 
 	def __repr__(self):
-		return '<Participant {}>'.format(self.id)
+		return f'<Participant id:{self.id}, explanation_version: {self.explanation_version}>'
 
 
 class Action(db.Model):

@@ -70,8 +70,10 @@ def survey():
 			db.session.add(demographic)
 			db.session.commit()
 
+			explanatons_list = [0, 1]  # 0: no saliency maps, 1: saliency maps
+
 			participant = Participant(
-				explanation_version=1  #<<<<<<<<<<<<<<<<<<<<<<<<<< How should this be set?
+				explanation_version=random.choice(explanatons_list)  # explanation version chosen randomly. This should give us an even split between the two
 			)
 			db.session.add(participant)
 			db.session.commit()
@@ -97,7 +99,7 @@ def tutorial():
 			concept = line.split(" ")
 			concept_preds.append((int(concept[0].strip()), concept[1].strip(), float(concept[2].strip()), concept[3].strip()))  # concept index, concept explanation file name, concept prediction, concept string
 
-	model_name = "CtoY_dense_onnx_model.onnx"
+	model_name = "independent_CtoY_dense_onnx_model.onnx"
 
 	return render_template('study/tutorial.html', title='Tutorial', concept_out=concept_preds, model_name=model_name, explanation_version=session["explanation_version"])
 
@@ -157,7 +159,7 @@ def samples():
 			for idx, line in enumerate(content):
 				concept_preds[idx].append(line)  # Add concept description to concept item
 
-		model_name = "CtoY_dense_onnx_model.onnx"
+		model_name = "independent_CtoY_dense_onnx_model.onnx"
 
 		"""
 		explanation versions

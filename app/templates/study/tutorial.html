@@ -24,8 +24,8 @@
 					<div class="row mb-3">
 						<div class="col-3">
 							<div class="row" id="input-image">
-								<div class="col-12 m-sm-auto m-md-0">
-									<img class="mb-3" src="{{ url_for('study.get_image_tutorial', filename=sample_id|string + '/input.png') }}" width="100%" id="model_input" style="max-width: 369px;">
+								<div class="col-12 m-sm-auto m-md-0" id="input_img_container">
+									<img class="mb-3" src="{{ url_for('study.get_image_tutorial', filename=sample_id|string + '/input.jpeg') }}" width="100%" id="model_input" style="max-width: 369px;">
 								</div>
 							</div>
 						</div>
@@ -70,7 +70,7 @@
 										</div>
 									{% elif explanation_version == 1 %}
 										<div class="row g-0">
-											<div class="col-md-4">
+											<div class="col-md-4" id="{{ concept_id }}_img_container">
 												<img id="image_saliency_{{ concept_id }}" class="img-fluid rounded-start" src="{{ url_for('study.get_image_tutorial', filename=sample_id|string + '/' + concept[1]|string) }}" width="100%">
 											</div>
 											<div class="col-md-8">
@@ -111,6 +111,7 @@
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.16.3/dist/ort.min.js"></script>
+<script type=text/javascript src="{{url_for('static', filename='js/js-image-zoom.js') }}"></script>
 
 <script>
 
@@ -143,7 +144,7 @@
 		{
 			title: 'Sample image',
 			element: document.getElementById('input-image'),
-			intro: 'Sample images are located here.'
+			intro: 'Sample images are located here. Hover the mouse cursor over the image zoom in.'
 		},
 		{
 			title: 'AI prediction',
@@ -157,7 +158,7 @@
 		},
 		{
 			title: 'Concepts',
-			intro: 'Concepts represent visual signs we may see in a sample image.'
+			intro: 'Concepts represent visual observations we may see in a sample image.'
 		},
 		{
 			title: 'Concept order',
@@ -310,6 +311,33 @@
 			container.appendChild(document.getElementById(explanation[0]))
 		});
 	};
+
+	// image zoom
+	var imageZoomMainOptions = {
+		fillContainer: true,
+		offset: {vertical: 0, horizontal: 0},
+		zoomPosition: "bottom",
+		zoomStyle: "z-index: 999;",
+	};
+
+	var imageZoomExplainOptions = {
+		fillContainer: true,
+		scale: 1.1,
+		zoomWidth: 300,
+		width: 200,
+		height: 200,
+		offset: {vertical: 0, horizontal: 0},
+		zoomPosition: "bottom",
+		zoomStyle: "z-index: 999;",
+	};
+
+	new ImageZoom(document.getElementById("input_img_container"), imageZoomMainOptions);
+
+	{% if explanation_version == 1 %}
+		{% for concept in concept_out %}
+			new ImageZoom(document.getElementById("{{ concept[0] }}_img_container"), imageZoomExplainOptions);
+		{% endfor %}
+	{% endif %}
 
 	// run all functions for the inital page load
 	window.onload = function() {
