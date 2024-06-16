@@ -94,8 +94,8 @@
 				<P class="h4 text-center">Please label the sample</p>
 
 					<div class="d-flex justify-content-center" id="sample-classification">
-						<button type="submit" name=submit class="btn btn-secondary col-3 mx-2" value="malignant">Malignant</button>
-						<button type="submit" name=submit class="btn btn-secondary col-3 mx-2" value="benign">Benign</button>
+						<button type="submit" name=submit class="btn btn-secondary col-3 mx-2" value="malignant">Malignant melanoma</button>
+						<button type="submit" name=submit class="btn btn-secondary col-3 mx-2" value="benign">Seborrheic keratosis</button>
 					</div>
 			</div>
 
@@ -123,7 +123,7 @@
 		},
 		{
 			title: 'Study aim',
-			intro: 'We have created an artificial agent to help you classify skin diseases from images as either <b>malignant</b> or <b>benign</b>. The artificial agent is capable of explaining it\'s prediction.'
+			intro: 'We have created an artificial agent to help you classify skin diseases from images as either <b>malignant melanoma</b> or <b>seborrheic keratosis</b>. The artificial agent is capable of explaining it\'s prediction.'
 		},
 		{
 			title: 'Study aim',
@@ -154,7 +154,7 @@
 		{
 			title: 'Show and hide concepts',
 			element: document.getElementById('concept-toggle'),
-			intro: 'To classify a sample the artificial agent first predicts a series of concepts which are then used for the sample classification. These can be shown or hidden to reveal why the artificial agent classified the sample as malignant or benign.'
+			intro: 'To classify a sample the artificial agent first predicts a series of concepts which are then used for the sample classification. These can be shown or hidden to reveal why the artificial agent classified the sample as malignant melanoma or seborrheic keratosis.'
 		},
 		{
 			title: 'Concepts',
@@ -167,34 +167,34 @@
 		},
 		{
 			title: 'Concept explanation',
-			element: document.getElementById('explanation_17'),
+			element: document.getElementById('explanation_16'),
 			intro: 'The artificial agent predicts 22 concepts.'
 		},
 		{
 			title: 'Explanation name',
-			element: document.getElementById('concept_name_17'),
+			element: document.getElementById('concept_name_16'),
 			intro: 'The concept name uses a standard lexicon to describe physical examination finds.'
 		},
 		{
 			title: 'Explanation value',
-			element: document.getElementById('17-badge'),
+			element: document.getElementById('16-badge'),
 			intro: 'The artificial agent predicts a value for each concept between 0 and 1. Any value of 0.5 and over means the artificial agent predicted the concept as present, and a value below 0.5 is not present. This value can be seen as how confident the model was. A value close to 0 or 1 is very confident, whereas a value close to 0.5 is not confident.'
 		},
 		{% if explanation_version == 1 %}
 		{
 			title: 'Explanation saliency',
-			element: document.getElementById('image_saliency_17'),
+			element: document.getElementById('image_saliency_16'),
 			intro: 'Each concept explanation has an image which shows the saliency of what the artificial agent used to make the prediction. Red highlights pixels contributing towards the concept prediction and blue highlights pixels against the concept prediction.'
 		},
 		{% endif %}
 		{
 			title: 'Interventions',
-			element: document.getElementById('17'),
+			element: document.getElementById('16'),
 			intro: 'You can modify the concept prediction if you belive it is incorrect or wish to see what the artificial agent would predict if it were different.'
 		},
 		{
 			title: 'Interventions',
-			element: document.getElementById('17'),
+			element: document.getElementById('16'),
 			intro: 'In this example, we have updated the concept value for the concept "White".'
 		},
 		{
@@ -204,7 +204,7 @@
 		},
 		{
 			title: 'Reset concept predictions',
-			element: document.getElementById('17-reset'),
+			element: document.getElementById('16-reset'),
 			intro: 'If we would like to reset a concept prediction then the reset button can be pressed.'
 		},
 		{
@@ -224,9 +224,9 @@
 		if (this._currentStep === 8) {
 			document.getElementById('collapseConcepts').classList.add('show');
 		} else if (this._currentStep === update_step) {
-			document.getElementById('17').value = 0.15;
-			updateValue('17');
-			enableBtn('17-reset')
+			document.getElementById('16').value = 0.15;
+			updateValue('16');
+			enableBtn('16-reset')
 			predict();
 		}
 	});
@@ -284,9 +284,9 @@
 
 		// update task out prediction displayed
 		if (index <= 0) {
-			document.getElementById("task-out").innerHTML = "benign";
+			document.getElementById("task-out").innerHTML = "seborrheic keratosis";
 		} else {
-			document.getElementById("task-out").innerHTML = "malignant";
+			document.getElementById("task-out").innerHTML = "malignant melanoma";
 		};
 	};
 

@@ -100,8 +100,8 @@
 			<form action="" method="post">
 				{{ form.hidden_tag() }}
 				<div class="d-flex justify-content-center">
-					<button type="submit" name=submit class="btn btn-secondary col-3 mx-2", value="malignant">Malignant</button>
-					<button type="submit" name=submit class="btn btn-secondary col-3 mx-2", value="benign">Benign</button>
+					<button type="submit" name=submit class="btn btn-secondary col-3 mx-2", value="malignant">Malignant melanoma</button>
+					<button type="submit" name=submit class="btn btn-secondary col-3 mx-2", value="benign">Seborrheic keratosis</button>
 				</div>
 			</form>
 		</div>
@@ -215,9 +215,9 @@
 
 		// update task out prediction displayed
 		if (index <= 0) {
-			var model_out = "benign"
+			var model_out = "seborrheic keratosis"
 		} else {
-			var model_out = "malignant"
+			var model_out = "malignant melanoma"
 		};
 		document.getElementById("task-out").innerHTML = model_out;
 
