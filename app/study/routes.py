@@ -97,7 +97,13 @@ def tutorial():
 		content = (f.read().decode('latin1').strip()).split("\n")
 		for line in content:
 			concept = line.split(" ")
-			concept_preds.append((int(concept[0].strip()), concept[1].strip(), float(concept[2].strip()), concept[3].strip()))  # concept index, concept explanation file name, concept prediction, concept string
+			concept_preds.append([int(concept[0].strip()), concept[1].strip(), float(concept[2].strip()), concept[3].strip()])  # concept index, concept explanation file name, concept prediction, concept string
+
+	# open txt file with concept predictions and concept explanation file names
+	with bp.open_resource(f"static/samples/concept_desc.txt") as f:
+		content = (f.read().decode('latin1').strip()).split("\n")
+		for idx, line in enumerate(content):
+			concept_preds[idx].append(line)  # Add concept description to concept item
 
 	model_name = "independent_CtoY_dense_onnx_model.onnx"
 
@@ -110,8 +116,6 @@ def samples():
 	# save participant sample classification
 	if form.validate_on_submit():
 
-		print("ai_use", request.form["ai_use"])
-
 		# update db entery with participant selection
 		samples_left = session["samples_left"]
 		sample = db.session.query(Sample).filter_by(participant_id=session["participant_id"], sample_id=samples_left[-1]).first()
@@ -120,8 +124,6 @@ def samples():
 		sample.ai_use = request.form["ai_use"]
 		db.session.add(sample)
 		db.session.commit()
-
-		print(sample)
 
 		# remove sample from samples_left
 		del samples_left[-1]

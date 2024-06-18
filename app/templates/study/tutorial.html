@@ -11,43 +11,68 @@
 		</div>
 		<div class="">
 
-			<div class="d-grid col-6 mx-auto mb-5">
+			<div class="text-center">
 				<button type="button" class="btn btn-primary btn-lg mx-auto" onclick="startTutorial()">Start tutorial</button>
+				<p class="mt-3">(You can start the study by clicking the button at the bottom of the page)</p>
 			</div>
 
 			<hr />
 
 			<div class="row" id="sample-layout">
 
-				<div id="ai-prediction" class="bg-white pt-3">
-					<div class="container-fluid" style="max-width: 1140px;">
-					<div class="row mb-3">
-						<div class="col-3">
-							<div class="row" id="input-image">
-								<div class="col-12 m-sm-auto m-md-0" id="input_img_container">
-									<img class="mb-3" src="{{ url_for('study.get_image_tutorial', filename=sample_id|string + '/input.jpeg') }}" width="100%" id="model_input" style="max-width: 369px;">
+				<div id="ai-prediction" class="bg-white col-12 col-md-7">
+					<div class="position-static position-md-fixed">
+						<div class="container-fluid" style="max-width: 1140px;" id="ai-prediction-position">
+							<div class="row mb-3">
+								<div class="col-12">
+									<div class="m-auto" id="input_img_container">
+										<img class="mb-3 h-auto" src="{{ url_for('study.get_image_tutorial', filename=sample_id|string + '/input.jpeg') }}" width="100%" id="model_input">
+									</div>
+								</div>
+								<div class="col-12">
+									<div class="card border-info mb-3" id="model-output">
+										<div class="card-header">
+										AI prediction
+										</div>
+										<div class="card-body">
+											<p class="card-text" id="task-out"></p>
+										</div>
+									</div>
 								</div>
 							</div>
 						</div>
-						<div class="col-9">
-							<div class="card border-info mb-3" id="model-output">
-								<div class="card-header">
-								AI prediction
-								</div>
-								<div class="card-body">
-									<p class="card-text" id="task-out"></p>
-								</div>
+
+						<div id="sample-classification">
+							<p class="h4 text-center">Please label the sample</p>
+
+							<p class="h6 text-center">Select the option that applies</p>
+							<div class="mb-3">
+									<div class="form-check form-check-inline">
+										<input class="form-check-input" id="ai_use-0" name="ai_use" required="" type="radio" value="1">
+										<label class="form-check-label" for="ai_use-0">I agree with the final AI prediction</label>
+									</div>
+
+									<div class="form-check form-check-inline">
+										<input checked="" class="form-check-input" id="ai_use-1" name="ai_use" required="" type="radio" value="2">
+										<label class="form-check-label" for="ai_use-1">I disagree with the final AI prediction</label>
+									</div>
+
+									<div class="form-check form-check-inline">
+										<input class="form-check-input" id="ai_use-2" name="ai_use" required="" type="radio" value="3">
+										<label class="form-check-label" for="ai_use-2">I disagree with the final AI prediction</label>
+									</div>
+							</div>
+							<p class="h6 text-center">Label the sample</p>
+							<div class="d-flex justify-content-center">
+								<button type="submit" name="submit" class="btn btn-secondary mx-2" value="malignant">Malignant melanoma</button>
+								<button type="submit" name="submit" class="btn btn-secondary mx-2" value="benign">Seborrheic keratosis</button>
 							</div>
 						</div>
-				</div>
-				</div>
+					</div>
 				</div>
 
-				<button id="concept-toggle" class="btn btn-primary col-4 mx-auto mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#collapseConcepts" aria-expanded="false" aria-controls="collapseConcepts">
-					View/hide concepts
-				</button>
-				<div class="collapse" id="collapseConcepts" style="transition: 0.8s;">
-					<h4>Predicted concepts</h4>
+				<div class="col-12 col-md-5">
+					<h4 id="concept_list_title">Predicted concepts</h4>
 
 					<label for="concept_order" class="form-label">Concept order</label>
 					<select id="concept-order" class="form-select mb-3" aria-label="concept_order" id="concept_order" onChange="orderConcepts(this.options[this.selectedIndex].value, true)">
@@ -58,26 +83,42 @@
 						{% for concept in concept_out %}
 							{% set concept_id = concept[0] %}
 
-							<div class="col-6" id="explanation_{{ concept_id }}">
+							<div class="col-12" id="explanation_{{ concept_id }}">
 								<div class="card mb-3">
 									{% if explanation_version == 0 %}
 										<div class="card-body">
-											<p id="concept_name_{{ concept_id }}" class="card-text">{{ concept[3] }}</p>
+											<div class="d-flex justify-content-between mb-2">
+												<p class="card-text" id="concept_name_{{ concept_id }}">{{ concept[3] }}</p>
+												<button class="btn btn-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDesc_{{ concept_id }}" aria-expanded="false" aria-controls="collapseDesc_{{ concept_id }}">
+													<i class="bi bi-question-circle-fill"></i>
+												</button>
+											</div>
+											<div class="collapse border border-info-subtle p-1 rounded" id="collapseDesc_{{ concept_id }}">
+												<p>{{ concept[4] }}</p>
+											</div>
 											<input type="hidden" id="{{ concept_id }}-initial" value="{{ concept[2]|round(2) }}">
-											<input type="range" class="form-range" min="0" max="1" step="0.01" value="{{ concept[2]|round(2) }}" id="{{ concept_id }}" name="{{ concept_id }}" onchange="enableBtn('{{ concept_id }}-reset'); updateValue('{{ concept_id }}'); predict();">
+											<input type="range" class="form-range" min="0" max="1" step="0.01" value="{{ concept[2]|round(2) }}" id="{{ concept_id }}" name="{{ concept_id }}" onchange="enableBtn('{{ concept_id }}-reset'); updateValue('{{ concept_id }}'); logUpdate('{{ concept_id }}', '{{ sample_id }}', false);">
 											<p><span class="badge rounded-pill bg-secondary" id="{{ concept_id }}-badge">{{ concept[2]|round(2) }}</span></p>
 											<button type="button" class="btn btn-secondary" onclick="resetValue({{ concept_id }})" id="{{ concept_id }}-reset" disabled>Reset</button>
 										</div>
 									{% elif explanation_version == 1 %}
 										<div class="row g-0">
 											<div class="col-md-4" id="{{ concept_id }}_img_container">
-												<img id="image_saliency_{{ concept_id }}" class="img-fluid rounded-start" src="{{ url_for('study.get_image_tutorial', filename=sample_id|string + '/' + concept[1]|string) }}" width="100%">
+												<img class="img-fluid rounded-start w-100 h-auto" src="{{ url_for('study.get_image_tutorial', filename=sample_id|string + '/' + concept[1]|string) }}" id="image_saliency_{{ concept_id }}">
 											</div>
 											<div class="col-md-8">
 												<div class="card-body">
-														<p id="concept_name_{{ concept_id }}" class="card-text">{{ concept[3] }}</p>
+														<div class="d-flex justify-content-between mb-2">
+															<p class="card-text" id="concept_name_{{ concept_id }}">{{ concept[3] }}</p>
+															<button class="btn btn-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDesc_{{ concept_id }}" aria-expanded="false" aria-controls="collapseDesc_{{ concept_id }}">
+																<i class="bi bi-question-circle-fill"></i>
+															</button>
+														</div>
+														<div class="collapse border border-info-subtle p-1 rounded" id="collapseDesc_{{ concept_id }}">
+															<p>{{ concept[4] }}</p>
+														</div>
 														<input type="hidden" id="{{ concept_id }}-initial" value="{{ concept[2]|round(2) }}">
-														<input type="range" class="form-range" min="0" max="1" step="0.01" value="{{ concept[2]|round(2) }}" id="{{ concept_id }}" name="{{ concept_id }}" onchange="enableBtn('{{ concept_id }}-reset'); updateValue('{{ concept_id }}'); predict();">
+														<input type="range" class="form-range" min="0" max="1" step="0.01" value="{{ concept[2]|round(2) }}" id="{{ concept_id }}" name="{{ concept_id }}" onchange="enableBtn('{{ concept_id }}-reset'); updateValue('{{ concept_id }}'); logUpdate('{{ concept_id }}', '{{ sample_id }}', false);">
 														<p><span class="badge rounded-pill bg-secondary" id="{{ concept_id }}-badge">{{ concept[2]|round(2) }}</span></p>
 														<button type="button" class="btn btn-secondary" onclick="resetValue({{ concept_id }})" id="{{ concept_id }}-reset" disabled>Reset</button>
 												</div>
@@ -90,13 +131,6 @@
 						{% endfor %}
 					</div>
 				</div>
-
-				<P class="h4 text-center">Please label the sample</p>
-
-					<div class="d-flex justify-content-center" id="sample-classification">
-						<button type="submit" name=submit class="btn btn-secondary col-3 mx-2" value="malignant">Malignant melanoma</button>
-						<button type="submit" name=submit class="btn btn-secondary col-3 mx-2" value="benign">Seborrheic keratosis</button>
-					</div>
 			</div>
 
 			<hr />
@@ -112,8 +146,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.16.3/dist/ort.min.js"></script>
 <script type=text/javascript src="{{url_for('static', filename='js/js-image-zoom.js') }}"></script>
-
-<script>
+<script type="text/javascript">
 
 	var intro = introJs();
 	intro.setOptions({
@@ -130,34 +163,35 @@
 			intro: 'We are measuring the effect these explanations have on you completing the task.'
 		},
 		{
-			element: document.getElementById('sample-layout'),
-			intro: 'The study will use this layout where you will be shown a series of sample images.'
+			title: 'Page layout',
+			intro: 'The study will use the same layout as on this page. The sample images will be on the left and concept explanations on the right.'
 		},
 		{
 			element: document.getElementById('sample-classification'),
-			intro: 'When you have evaluated the sample you will be asked to label the sample.'
+			intro: 'When you have evaluated the sample you will be asked to label it.'
 		},
 		{
-			element: document.getElementById('ai-prediction'),
-			intro: 'At the top of the page, you will find information about the sample and the artificial agent\'s prediction.'
-		},
-		{
-			title: 'Sample image',
-			element: document.getElementById('input-image'),
-			intro: 'Sample images are located here. Hover the mouse cursor over the image zoom in.'
+			element: document.getElementById('ai-prediction-position'),
+			intro: 'You will be presented with the sample image and the artificial agent\'s prediction.'
 		},
 		{
 			title: 'AI prediction',
 			element: document.getElementById('model-output'),
-			intro: 'And the artifical agent\'s prediction here.'
+			intro: 'The artificial agent will predict each sample.'
 		},
 		{
-			title: 'Show and hide concepts',
-			element: document.getElementById('concept-toggle'),
-			intro: 'To classify a sample the artificial agent first predicts a series of concepts which are then used for the sample classification. These can be shown or hidden to reveal why the artificial agent classified the sample as malignant melanoma or seborrheic keratosis.'
+			title: 'AI prediction',
+			element: document.getElementById('model-output'),
+			intro: 'The artificial agent classifies samples in a two-step process. It will first predict a series of concepts and then use the concept prediction for the sample classification.'
 		},
 		{
-			title: 'Concepts',
+			title: 'Concept explanations',
+			element: document.getElementById('concept_list_title'),
+			intro: 'The artificial agent predicts 22 concepts.'
+		},
+		{
+			title: 'Concept explanations',
+			element: document.getElementById('concept_list_title'),
 			intro: 'Concepts represent visual observations we may see in a sample image.'
 		},
 		{
@@ -166,14 +200,9 @@
 			intro: 'Concepts can be ordered in ascending or descending order based on the concept value. By default, it is ordered in descending order.'
 		},
 		{
-			title: 'Concept explanation',
-			element: document.getElementById('explanation_16'),
-			intro: 'The artificial agent predicts 22 concepts.'
-		},
-		{
 			title: 'Explanation name',
 			element: document.getElementById('concept_name_16'),
-			intro: 'The concept name uses a standard lexicon to describe physical examination finds.'
+			intro: 'The concept name uses a standard lexicon to describe visual observations.'
 		},
 		{
 			title: 'Explanation value',
@@ -190,12 +219,12 @@
 		{
 			title: 'Interventions',
 			element: document.getElementById('16'),
-			intro: 'You can modify the concept prediction if you belive it is incorrect or wish to see what the artificial agent would predict if it were different.'
+			intro: 'You can modify the concept prediction if you believe it is incorrect or wish to see what the artificial agent would predict if it were different.'
 		},
 		{
 			title: 'Interventions',
 			element: document.getElementById('16'),
-			intro: 'In this example, we have updated the concept value for the concept "White".'
+			intro: 'In this example, we have updated the value for the concept "Brown".'
 		},
 		{
 			title: 'Interventions continued',
@@ -221,9 +250,7 @@
 	{% endif %}
 
 	intro.onbeforechange(function () {
-		if (this._currentStep === 8) {
-			document.getElementById('collapseConcepts').classList.add('show');
-		} else if (this._currentStep === update_step) {
+		if (this._currentStep === update_step) {
 			document.getElementById('16').value = 0.15;
 			updateValue('16');
 			enableBtn('16-reset')
@@ -331,7 +358,7 @@
 		zoomStyle: "z-index: 999;",
 	};
 
-	new ImageZoom(document.getElementById("input_img_container"), imageZoomMainOptions);
+	//new ImageZoom(document.getElementById("input_img_container"), imageZoomMainOptions);
 
 	{% if explanation_version == 1 %}
 		{% for concept in concept_out %}
