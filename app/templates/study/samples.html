@@ -7,103 +7,112 @@
 
 		<div class="row">
 
-			<div id="ai-prediction" class="bg-white pt-3">
-				<div class="container-fluid" style="max-width: 1140px;">
-					<div class="row mb-3">
-						<div class="col-3">
-							<div class="row">
-								<div class="col-12 m-sm-auto m-md-0" id="input_img_container">
-									<img class="mb-3 h-auto" src="{{ url_for('study.get_image', filename=sample_id|string + '/input.jpeg') }}" width="100%" id="model_input" style="max-width: 369px;">
+			<div id="ai-prediction" class="bg-white col-12 col-md-7">
+				<div class="position-static position-md-fixed">
+					<div class="container-fluid" style="max-width: 1140px;">
+						<div class="row mb-3">
+							<div class="col-12">
+								<div class="m-auto" id="input_img_container">
+									<img class="mb-3 h-auto" src="{{ url_for('study.get_image', filename=sample_id|string + '/input.jpeg') }}" width="100%" id="model_input">
 								</div>
 							</div>
-						</div>
-						<div class="col-9">
-							<div class="card border-info mb-3">
-								<div class="card-header">
-								AI prediction
-								</div>
-								<div class="card-body">
-									<p class="card-text" id="task-out"></p>
+							<div class="col-12">
+								<div class="card border-info mb-3">
+									<div class="card-header">
+									AI prediction
+									</div>
+									<div class="card-body">
+										<p class="card-text" id="task-out"></p>
+									</div>
 								</div>
 							</div>
 						</div>
 					</div>
-				</div>
-			</div>
 
-			<button class="btn btn-primary col-4 mx-auto mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#collapseConcepts" aria-expanded="false" aria-controls="collapseConcepts">
-				View/hide concepts
-			</button>
-			<div class="collapse" id="collapseConcepts" style="transition: 0.8s;">
-				<h4>Predicted concepts</h4>
+					<p class="h4 text-center mb-3">Please label the sample</p>
 
-				<label for="concept_order" class="form-label">Concept order</label>
-				<select class="form-select mb-3" aria-label="concept_order" id="concept_order" onChange="orderConcepts(this.options[this.selectedIndex].value, true)">
-					<option selected value="hl">Highest to lowest concept value</option>
-					<option value="lh">Lowest to highest concept value</option>
-				</select>
-				<div class="row" id="all_explanations">
-					{% for concept in concept_out %}
-						{% set concept_id = concept[0] %}
-
-						<div class="col-6" id="explanation_{{ concept_id }}">
-							<div class="card mb-3">
-								{% if explanation_version == 0 %}
-									<div class="card-body">
-										<div class="d-flex justify-content-between mb-2">
-											<p class="card-text">{{ concept[3] }}</p>
-											<button class="btn btn-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDesc_{{ concept_id }}" aria-expanded="false" aria-controls="collapseDesc_{{ concept_id }}">
-												<i class="bi bi-question-circle-fill"></i>
-											</button>
-										</div>
-										<div class="collapse border border-info-subtle p-1 rounded" id="collapseDesc_{{ concept_id }}">
-											<p>{{ concept[4] }}</p>
-										</div>
-										<input type="hidden" id="{{ concept_id }}-initial" value="{{ concept[2]|round(2) }}">
-										<input type="range" class="form-range" min="0" max="1" step="0.01" value="{{ concept[2]|round(2) }}" id="{{ concept_id }}" name="{{ concept_id }}" onchange="enableBtn('{{ concept_id }}-reset'); updateValue('{{ concept_id }}'); logUpdate('{{ concept_id }}', '{{ sample_id }}', false);">
-										<p><span class="badge rounded-pill bg-secondary" id="{{ concept_id }}-badge">{{ concept[2]|round(2) }}</span></p>
-										<button type="button" class="btn btn-secondary" onclick="resetValue({{ concept_id }})" id="{{ concept_id }}-reset" disabled>Reset</button>
-									</div>
-								{% elif explanation_version == 1 %}
-									<div class="row g-0">
-										<div class="col-md-4" id="{{ concept_id }}_img_container">
-											<img class="img-fluid rounded-start" src="{{ url_for('study.get_image', filename=sample_id|string + '/' + concept[1]|string) }}" width="100%">
-										</div>
-										<div class="col-md-8">
-											<div class="card-body">
-													<div class="d-flex justify-content-between mb-2">
-														<p class="card-text">{{ concept[3] }}</p>
-														<button class="btn btn-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDesc_{{ concept_id }}" aria-expanded="false" aria-controls="collapseDesc_{{ concept_id }}">
-															<i class="bi bi-question-circle-fill"></i>
-														</button>
-													</div>
-													<div class="collapse border border-info-subtle p-1 rounded" id="collapseDesc_{{ concept_id }}">
-														<p>{{ concept[4] }}</p>
-													</div>
-													<input type="hidden" id="{{ concept_id }}-initial" value="{{ concept[2]|round(2) }}">
-													<input type="range" class="form-range" min="0" max="1" step="0.01" value="{{ concept[2]|round(2) }}" id="{{ concept_id }}" name="{{ concept_id }}" onchange="enableBtn('{{ concept_id }}-reset'); updateValue('{{ concept_id }}'); logUpdate('{{ concept_id }}', '{{ sample_id }}', false);">
-													<p><span class="badge rounded-pill bg-secondary" id="{{ concept_id }}-badge">{{ concept[2]|round(2) }}</span></p>
-													<button type="button" class="btn btn-secondary" onclick="resetValue({{ concept_id }})" id="{{ concept_id }}-reset" disabled>Reset</button>
-											</div>
-										</div>
-									</div>
-								{% endif %}
-							</div>
+					<form action="" method="post" class="mb-3" autocomplete="off" id="sample-submit-form">
+						{{ form.hidden_tag() }}
+						<p class="h6 text-center">Select the option that applies</p>
+						<div class="mb-3">
+							{% for subfield in form.ai_use %}
+								<div class="form-check form-check-inline">
+									{{ subfield (class_="form-check-input") }}
+									{{ subfield.label (class_="form-check-label") }}
+								</div>
+							{% endfor %}
 						</div>
-
-					{% endfor %}
+						<p class="h6 text-center">Label the sample</p>
+						<div class="d-flex justify-content-center">
+							<button type="submit" name=submit class="btn btn-secondary mx-2", value="malignant">Malignant melanoma</button>
+							<button type="submit" name=submit class="btn btn-secondary mx-2", value="benign">Seborrheic keratosis</button>
+						</div>
+					</form>
 				</div>
 			</div>
 
-			<P class="h4 text-center">Please label the sample</p>
+			<div class="col-12 col-md-5">
 
-			<form action="" method="post">
-				{{ form.hidden_tag() }}
-				<div class="d-flex justify-content-center">
-					<button type="submit" name=submit class="btn btn-secondary col-3 mx-2", value="malignant">Malignant melanoma</button>
-					<button type="submit" name=submit class="btn btn-secondary col-3 mx-2", value="benign">Seborrheic keratosis</button>
-				</div>
-			</form>
+			<h4>Predicted concepts</h4>
+
+			<label for="concept_order" class="form-label">Concept order</label>
+			<select class="form-select mb-3" aria-label="concept_order" id="concept_order" onChange="orderConcepts(this.options[this.selectedIndex].value, true)">
+				<option selected value="hl">Highest to lowest concept value</option>
+				<option value="lh">Lowest to highest concept value</option>
+			</select>
+			<div class="row" id="all_explanations">
+				{% for concept in concept_out %}
+					{% set concept_id = concept[0] %}
+
+					<div class="col-12" id="explanation_{{ concept_id }}">
+						<div class="card mb-3">
+							{% if explanation_version == 0 %}
+								<div class="card-body">
+									<div class="d-flex justify-content-between mb-2">
+										<p class="card-text">{{ concept[3] }}</p>
+										<button class="btn btn-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDesc_{{ concept_id }}" aria-expanded="false" aria-controls="collapseDesc_{{ concept_id }}">
+											<i class="bi bi-question-circle-fill"></i>
+										</button>
+									</div>
+									<div class="collapse border border-info-subtle p-1 rounded" id="collapseDesc_{{ concept_id }}">
+										<p>{{ concept[4] }}</p>
+									</div>
+									<input type="hidden" id="{{ concept_id }}-initial" value="{{ concept[2]|round(2) }}">
+									<input type="range" class="form-range" min="0" max="1" step="0.01" value="{{ concept[2]|round(2) }}" id="{{ concept_id }}" name="{{ concept_id }}" onchange="enableBtn('{{ concept_id }}-reset'); updateValue('{{ concept_id }}'); logUpdate('{{ concept_id }}', '{{ sample_id }}', false);">
+									<p><span class="badge rounded-pill bg-secondary" id="{{ concept_id }}-badge">{{ concept[2]|round(2) }}</span></p>
+									<button type="button" class="btn btn-secondary" onclick="resetValue({{ concept_id }})" id="{{ concept_id }}-reset" disabled>Reset</button>
+								</div>
+							{% elif explanation_version == 1 %}
+								<div class="row g-0">
+									<div class="col-md-4" id="{{ concept_id }}_img_container">
+										<img class="img-fluid rounded-start w-100 h-auto" src="{{ url_for('study.get_image', filename=sample_id|string + '/' + concept[1]|string) }}">
+									</div>
+									<div class="col-md-8">
+										<div class="card-body">
+												<div class="d-flex justify-content-between mb-2">
+													<p class="card-text">{{ concept[3] }}</p>
+													<button class="btn btn-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDesc_{{ concept_id }}" aria-expanded="false" aria-controls="collapseDesc_{{ concept_id }}">
+														<i class="bi bi-question-circle-fill"></i>
+													</button>
+												</div>
+												<div class="collapse border border-info-subtle p-1 rounded" id="collapseDesc_{{ concept_id }}">
+													<p>{{ concept[4] }}</p>
+												</div>
+												<input type="hidden" id="{{ concept_id }}-initial" value="{{ concept[2]|round(2) }}">
+												<input type="range" class="form-range" min="0" max="1" step="0.01" value="{{ concept[2]|round(2) }}" id="{{ concept_id }}" name="{{ concept_id }}" onchange="enableBtn('{{ concept_id }}-reset'); updateValue('{{ concept_id }}'); logUpdate('{{ concept_id }}', '{{ sample_id }}', false);">
+												<p><span class="badge rounded-pill bg-secondary" id="{{ concept_id }}-badge">{{ concept[2]|round(2) }}</span></p>
+												<button type="button" class="btn btn-secondary" onclick="resetValue({{ concept_id }})" id="{{ concept_id }}-reset" disabled>Reset</button>
+										</div>
+									</div>
+								</div>
+							{% endif %}
+						</div>
+					</div>
+
+				{% endfor %}
+			</div>
+
+		</div>
 		</div>
 
 		<br/>
@@ -235,15 +244,15 @@
 	};
 
 	//https://bootstrap-menu.com/detail-fixed-onscroll.html
-	document.addEventListener("DOMContentLoaded", function(){
-		window.addEventListener('scroll', function() {
-			if (window.scrollY > 50) {
-				document.getElementById('ai-prediction').classList.add('fixed-top');
-			} else {
-				document.getElementById('ai-prediction').classList.remove('fixed-top');
-			}
-		});
-	});
+	//document.addEventListener("DOMContentLoaded", function(){
+	//	window.addEventListener('scroll', function() {
+	//		if (window.scrollY > 50) {
+	//			document.getElementById('ai-prediction').classList.add('fixed-top');
+	//		} else {
+	//			document.getElementById('ai-prediction').classList.remove('fixed-top');
+	//		}
+	//	});
+	//});
 
 	// reorder concept explanations
 	function orderConcepts(orderby, logUpdate) {
@@ -346,6 +355,11 @@
 	window.onload = function() {
 		var model_pred = predict();
 		orderConcepts("hl", false);
+
+		// clear select form radio buttons
+		document.getElementById("ai_use-0").checked = false;
+		document.getElementById("ai_use-1").checked = false;
+		document.getElementById("ai_use-2").checked = false;
 	};
 
 </script>

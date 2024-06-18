@@ -175,6 +175,13 @@
 				<div class="row mb-3">
 
 					{{ form.text.label (class_="form-label") }}
+					<div style="padding-right: calc(var(--bs-gutter-x)* .5);padding-left: calc(var(--bs-gutter-x)* .5);">
+						<p>This could include:</p>
+						<ol>
+							<li>How accurate you thought the AI predictions were</li>
+							<li>The usefullness of the concept explantions and modifying concept predictions</li>
+						</ol>
+					</div>
 					<div class="col">
 						{{ form.text (class_="form-control") }}
 					</div>

@@ -28,7 +28,7 @@ class DemographicForm(FlaskForm):
 
 
 class SampleForm(FlaskForm):
-	pass
+	ai_use = RadioField('Select the option that applies', choices=[(1, "I agree with the final AI prediction"), (2, "I disagree with the final AI prediction"), (3, "I disagree with the final AI prediction")], validators=[DataRequired()])
 
 
 class SurveyForm(FlaskForm):
