@@ -89,7 +89,7 @@ class Sample(db.Model):
 	model_malignant: so.Mapped[Optional[bool]] = so.mapped_column(sa.Boolean())
 	start_time: so.Mapped[datetime] = so.mapped_column(default=lambda: datetime.now(timezone.utc))
 	complete_time: so.Mapped[Optional[datetime]] = so.mapped_column()
-	ai_use: so.Mapped[int] = so.mapped_column(server_default="true")
+	ai_use: so.Mapped[int] = so.mapped_column(server_default="0")
 	created_at: so.Mapped[datetime] = so.mapped_column(default=lambda: datetime.now(timezone.utc))
 	updated_at: so.Mapped[datetime] = so.mapped_column(default=lambda: datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
 
