@@ -370,6 +370,11 @@
 	window.onload = function() {
 		predict();
 		orderConcepts("hl");
+
+		// clear select form radio buttons
+		document.getElementById("ai_use-0").checked = false;
+		document.getElementById("ai_use-1").checked = false;
+		document.getElementById("ai_use-2").checked = false;
 	};
 
 </script>
