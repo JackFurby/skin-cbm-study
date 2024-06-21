@@ -105,7 +105,7 @@ def tutorial():
 		for idx, line in enumerate(content):
 			concept_preds[idx].append(line)  # Add concept description to concept item
 
-	model_name = "independent_CtoY_dense_onnx_model.onnx"
+	model_name = "CtoY_indi_dense_404_onnx_model.onnx"
 
 	return render_template('study/tutorial.html', title='Tutorial', concept_out=concept_preds, model_name=model_name, explanation_version=session["explanation_version"])
 
@@ -166,7 +166,7 @@ def samples():
 			for idx, line in enumerate(content):
 				concept_preds[idx].append(line)  # Add concept description to concept item
 
-		model_name = "independent_CtoY_dense_onnx_model.onnx"
+		model_name = "CtoY_indi_dense_404_onnx_model.onnx"
 
 		"""
 		explanation versions
