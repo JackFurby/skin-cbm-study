@@ -9264,4 +9264,11 @@ textarea.form-control-lg {
 body {
   font-size: 1rem; }
 
+.position-container {
+  position: static; }
+
+@media (min-width: 1400px) {
+  .position-container {
+    position: fixed; } }
+
 /*# sourceMappingURL=style.scss.css.map */

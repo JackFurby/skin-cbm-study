@@ -1,0 +1,9 @@
+.position-container {
+		position: static;
+}
+
+@include media-breakpoint-up(xxl) {
+	.position-container {
+		position: fixed;
+	}
+}
