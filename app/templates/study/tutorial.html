@@ -45,21 +45,25 @@
 						<div id="sample-classification">
 							<p class="h4 text-center">Please label the sample</p>
 
-							<p class="h6 text-center">Select the option that applies</p>
-							<div class="mb-3">
+							<p class="h6 text-center">Select the option that applies
+								<button class="btn btn-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_ai_use" aria-expanded="false" aria-controls="collapse_ai_use">
+									<i class="bi bi-question-circle-fill"></i>
+								</button>
+							</p>
+							<div class="collapse border border-info-subtle p-1 rounded" id="collapse_ai_use">
+								<p><b>I used the AI predictions</b>: You looked at, interacted with or agreed with the concept predictions or sample label prediction.</p>
+								<p><b>I did not use AI predictions</b>: You did not look at the AI predictions before labeling the sample.</p>
+							</div>
+
+							<div class="mb-3 text-center">
 									<div class="form-check form-check-inline">
 										<input class="form-check-input" id="ai_use-0" name="ai_use" required="" type="radio" value="1">
-										<label class="form-check-label" for="ai_use-0">I agree with the final AI prediction</label>
+										<label class="form-check-label" for="ai_use-0" id="ai_use_true">I used the AI predictions</label>
 									</div>
 
 									<div class="form-check form-check-inline">
-										<input checked="" class="form-check-input" id="ai_use-1" name="ai_use" required="" type="radio" value="2">
-										<label class="form-check-label" for="ai_use-1">I disagree with the final AI prediction</label>
-									</div>
-
-									<div class="form-check form-check-inline">
-										<input class="form-check-input" id="ai_use-2" name="ai_use" required="" type="radio" value="3">
-										<label class="form-check-label" for="ai_use-2">I disagree with the final AI prediction</label>
+										<input class="form-check-input" id="ai_use-1" name="ai_use" required="" type="radio" value="2">
+										<label class="form-check-label" for="ai_use-1" id="ai_use_false">I did not use AI predictions</label>
 									</div>
 							</div>
 							<p class="h6 text-center">Label the sample</p>
@@ -156,7 +160,7 @@
 		},
 		{
 			title: 'Study aim',
-			intro: 'We have created an artificial agent to help you classify skin diseases from images as either <b>malignant melanoma</b> or <b>seborrheic keratosis</b>. The artificial agent is capable of explaining it\'s prediction.'
+			intro: 'We have created an artificial intelligence (AI) agent to help you classify skin diseases from images as either <b>malignant melanoma</b> or <b>seborrheic keratosis</b>. The artificial agent is capable of explaining it\'s prediction.'
 		},
 		{
 			title: 'Study aim',
@@ -164,30 +168,33 @@
 		},
 		{
 			title: 'Page layout',
-			intro: 'The study will use the same layout as on this page. The sample images will be on the left and concept explanations on the right.'
+			intro: 'The study will use the same layout as on this page. The sample images will be on the left and explanations on the right.'
 		},
 		{
 			element: document.getElementById('sample-classification'),
 			intro: 'When you have evaluated the sample you will be asked to label it.'
 		},
 		{
+			element: document.getElementById('ai_use_true'),
+			intro: 'Please select this option if you interacted with the AI agent in any way. This could be evaluating the sample prediction, the concept explanations, or modifying concept predictions.'
+		},
+		{
+			element: document.getElementById('ai_use_false'),
+			intro: 'Please select this option if you classified the sample without evaluating any of the AI agents outputs.'
+		},
+		{
 			element: document.getElementById('ai-prediction-position'),
-			intro: 'You will be presented with the sample image and the artificial agent\'s prediction.'
+			intro: 'You will be presented with sample images and AI agent\'s predictions.'
 		},
 		{
 			title: 'AI prediction',
 			element: document.getElementById('model-output'),
-			intro: 'The artificial agent will predict each sample.'
-		},
-		{
-			title: 'AI prediction',
-			element: document.getElementById('model-output'),
-			intro: 'The artificial agent classifies samples in a two-step process. It will first predict a series of concepts and then use the concept prediction for the sample classification.'
+			intro: 'The AI agent classifies samples in a two-step process. It will first predict a series of concepts and then use the concept prediction for the sample classification.'
 		},
 		{
 			title: 'Concept explanations',
 			element: document.getElementById('concept_list_title'),
-			intro: 'The artificial agent predicts 22 concepts.'
+			intro: 'The AI agent predicts 22 concepts.'
 		},
 		{
 			title: 'Concept explanations',
@@ -200,14 +207,14 @@
 			intro: 'Concepts can be ordered in ascending or descending order based on the concept value. By default, it is ordered in descending order.'
 		},
 		{
-			title: 'Explanation name',
+			title: 'Concept name',
 			element: document.getElementById('concept_name_16'),
 			intro: 'The concept name uses a standard lexicon to describe visual observations.'
 		},
 		{
-			title: 'Explanation value',
+			title: 'Concept value',
 			element: document.getElementById('16-badge'),
-			intro: 'The artificial agent predicts a value for each concept between 0 and 1. Any value of 0.5 and over means the artificial agent predicted the concept as present, and a value below 0.5 is not present. This value can be seen as how confident the model was. A value close to 0 or 1 is very confident, whereas a value close to 0.5 is not confident.'
+			intro: 'The AI agent predicts a value for each concept between 0 and 1. Any value of 0.5 and over means the AI agent predicted the concept as present, and a value below 0.5 is not present. This value can be seen as how confident the model was. A value close to 0 or 1 is very confident, whereas a value close to 0.5 is not confident.'
 		},
 		{% if explanation_version == 1 %}
 		{
@@ -219,7 +226,7 @@
 		{
 			title: 'Interventions',
 			element: document.getElementById('16'),
-			intro: 'You can modify the concept prediction if you believe it is incorrect or wish to see what the artificial agent would predict if it were different.'
+			intro: 'You can modify concept predictions if you believe they are incorrect or wish to see what the artificial agent would predict if they were different.'
 		},
 		{
 			title: 'Interventions',
@@ -229,12 +236,12 @@
 		{
 			title: 'Interventions continued',
 			element: document.getElementById('model-output'),
-			intro: 'By changing the concept prediction, the artificial agent classification will be updated. In this case, there was no change.'
+			intro: 'By changing the concept prediction, the AI agent classification will be updated. In this case, there was no change.'
 		},
 		{
 			title: 'Reset concept predictions',
 			element: document.getElementById('16-reset'),
-			intro: 'If we would like to reset a concept prediction then the reset button can be pressed.'
+			intro: 'You reset a concept prediction by pressing the reset button.'
 		},
 		{
 			title: 'Contine to study',
@@ -374,7 +381,6 @@
 		// clear select form radio buttons
 		document.getElementById("ai_use-0").checked = false;
 		document.getElementById("ai_use-1").checked = false;
-		document.getElementById("ai_use-2").checked = false;
 	};
 
 </script>
