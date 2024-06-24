@@ -1,9 +1,6 @@
-.position-container {
-		position: static;
-}
 
-@include media-breakpoint-up(xxl) {
-	.position-container {
-		position: fixed;
-	}
+// explanations scroll
+#all_explanations {
+	overflow: auto;
+	height: 80vh;
 }
