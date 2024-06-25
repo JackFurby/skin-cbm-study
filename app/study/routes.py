@@ -116,14 +116,18 @@ def samples():
 	# save participant sample classification
 	if form.validate_on_submit():
 
+		print(request.form)
+
 		# update db entery with participant selection
 		samples_left = session["samples_left"]
 		sample = db.session.query(Sample).filter_by(participant_id=session["participant_id"], sample_id=samples_left[-1]).first()
-		sample.participant_malignant = True if request.form['submit'] == 'malignant' else False
+		sample.participant_malignant = True if request.form['participant_malignant'] == '1' else False
 		sample.complete_time = get_datetime(round(((datetime.utcnow() - datetime(1970, 1, 1)).total_seconds())*1000))
-		sample.ai_use = request.form["ai_use"]
+		sample.ai_use = ",".join(request.form.getlist("ai_use"))  # save checkboxes selected as a string. Each character is one option selected
 		db.session.add(sample)
 		db.session.commit()
+
+		print(sample)
 
 		# remove sample from samples_left
 		del samples_left[-1]

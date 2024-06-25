@@ -31,52 +31,71 @@
 								</div>
 								<div class="col-12">
 									<div class="card border-info mb-3" id="model-output">
-										<div class="card-header">
-										AI prediction
+										<div class="card-header h4">
+										AI suggestion
 										</div>
 										<div class="card-body">
-											<p class="card-text" id="task-out"></p>
+											<p class="card-text h6" id="task-out"></p>
 										</div>
 									</div>
 								</div>
 							</div>
 						</div>
 
-						<div id="sample-classification">
-							<p class="h4 text-center">Please label the sample</p>
 
-							<p class="h6 text-center">Select the option that applies
-								<button class="btn btn-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_ai_use" aria-expanded="false" aria-controls="collapse_ai_use">
+						<div class="mx-2">
+							<p class="h6">Label the sample</p>
+							<div class="mb-3" id="sample-classification">
+
+									<div class="form-check">
+										<input class="form-check-input" id="participant_malignant-0" name="participant_malignant" required="" type="radio" value="0">
+										<label class="form-check-label" for="participant_malignant-0">Seborrheic keratosis</label>
+									</div>
+
+									<div class="form-check">
+										<input class="form-check-input" id="participant_malignant-1" name="participant_malignant" required="" type="radio" value="1">
+										<label class="form-check-label" for="participant_malignant-1">Malignant melanoma</label>
+									</div>
+
+							</div>
+							<p class="h6">Select all that apply
+								<button class="btn btn-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_ai_use" aria-expanded="true" aria-controls="collapse_ai_use">
 									<i class="bi bi-question-circle-fill"></i>
 								</button>
 							</p>
-							<div class="collapse border border-info-subtle p-1 rounded" id="collapse_ai_use">
-								<p><b>I used the AI predictions</b>: You looked at, interacted with or agreed with the concept predictions or sample label prediction.</p>
-								<p><b>I did not use AI predictions</b>: You did not look at the AI predictions before labeling the sample.</p>
+							<div class="border border-info-subtle p-1 rounded mb-1 collapse" id="collapse_ai_use" style="">
+								<p><b>I was influenced by the AI’s suggestion</b>: The suggested label the AI provided helped you label the sample.</p>
+								<p><b>I was influenced by the concepts the AI detected</b>: The concepts the AI detected helped you lable the sample.</p>
+								<p><b>I was not influenced by the AI</b>: You labeled the sample without looking at the AI outputs.</p>
 							</div>
 
-							<div class="mb-3 text-center">
-									<div class="form-check form-check-inline">
-										<input class="form-check-input" id="ai_use-0" name="ai_use" required="" type="radio" value="1">
-										<label class="form-check-label" for="ai_use-0" id="ai_use_true">I used the AI predictions</label>
+							<div class="mb-3" id="ai_use_select">
+
+									<div class="form-check">
+										<input class="form-check-input" id="ai_use-0" name="ai_use" type="checkbox" value="1">
+										<label class="form-check-label" for="ai_use-0">I was influenced by the AI’s suggestion</label>
 									</div>
 
-									<div class="form-check form-check-inline">
-										<input class="form-check-input" id="ai_use-1" name="ai_use" required="" type="radio" value="2">
-										<label class="form-check-label" for="ai_use-1" id="ai_use_false">I did not use AI predictions</label>
+									<div class="form-check">
+										<input class="form-check-input" id="ai_use-1" name="ai_use" type="checkbox" value="2">
+										<label class="form-check-label" for="ai_use-1">I was influenced by the concepts the AI detected</label>
 									</div>
+
+									<div class="form-check">
+										<input class="form-check-input" id="ai_use-2" name="ai_use" type="checkbox" value="3">
+										<label class="form-check-label" for="ai_use-2">I was not influenced by the AI</label>
+									</div>
+
 							</div>
-							<p class="h6 text-center">Label the sample</p>
-							<div class="d-flex justify-content-center">
-								<button type="submit" name="submit" class="btn btn-secondary mx-2" value="malignant">Malignant melanoma</button>
-								<button type="submit" name="submit" class="btn btn-secondary mx-2" value="benign">Seborrheic keratosis</button>
+							<div class="">
+								<button type="submit" name="submit" class="btn btn-primary">Submit</button>
 							</div>
 						</div>
 					</div>
 				</div>
 
 				<div class="col-12 col-md-5">
-					<h4 id="concept_list_title">Predicted concepts</h4>
+					<h4 id="concept_list_title">Detected concepts</h4>
 
 					<label for="concept_order" class="form-label">Concept order</label>
 					<select id="concept-order" class="form-select mb-3" aria-label="concept_order" id="concept_order" onChange="orderConcepts(this.options[this.selectedIndex].value, true)">
@@ -160,41 +179,30 @@
 		},
 		{
 			title: 'Study aim',
-			intro: 'We have created an artificial intelligence (AI) agent to help you classify skin diseases from images as either <b>malignant melanoma</b> or <b>seborrheic keratosis</b>. The artificial agent is capable of explaining it\'s prediction.'
+			intro: 'We have created an artificial intelligence (AI) agent to help you classify skin diseases from images as either <b>malignant melanoma</b> or <b>seborrheic keratosis</b>. The artificial agent is capable of suggesting a classification and detecting concepts.'
 		},
 		{
 			title: 'Study aim',
-			intro: 'We are measuring the effect these explanations have on you completing the task.'
+			intro: 'The AI is capable of explainaing it\'s outputs. We are measuring the effect these explanations have on you labeling samples.'
 		},
 		{
 			title: 'Page layout',
-			intro: 'The study will use the same layout as on this page. The sample images will be on the left and explanations on the right.'
+			intro: 'The study will use the same layout as on this page. The sample images will be on the left and the AI explanations on the right.'
 		},
 		{
-			element: document.getElementById('sample-classification'),
-			intro: 'When you have evaluated the sample you will be asked to label it.'
-		},
-		{
-			element: document.getElementById('ai_use_true'),
-			intro: 'Please select this option if you interacted with the AI agent in any way. This could be evaluating the sample prediction, the concept explanations, or modifying concept predictions.'
-		},
-		{
-			element: document.getElementById('ai_use_false'),
-			intro: 'Please select this option if you classified the sample without evaluating any of the AI agents outputs.'
-		},
-		{
+			title: 'Sample images and the AI\'s sugested label',
 			element: document.getElementById('ai-prediction-position'),
-			intro: 'You will be presented with sample images and AI agent\'s predictions.'
+			intro: 'You will be presented with sample images and the AI agent\'s suggested label.'
 		},
 		{
-			title: 'AI prediction',
+			title: 'AI sugestion',
 			element: document.getElementById('model-output'),
-			intro: 'The AI agent classifies samples in a two-step process. It will first predict a series of concepts and then use the concept prediction for the sample classification.'
+			intro: 'The AI agent will suggest a label for each sample.'
 		},
 		{
 			title: 'Concept explanations',
 			element: document.getElementById('concept_list_title'),
-			intro: 'The AI agent predicts 22 concepts.'
+			intro: 'The suggested label is based on the detection of 22 concepts. The concepts can be inspected to explain why a label was suggested.'
 		},
 		{
 			title: 'Concept explanations',
@@ -214,19 +222,19 @@
 		{
 			title: 'Concept value',
 			element: document.getElementById('16-badge'),
-			intro: 'The AI agent predicts a value for each concept between 0 and 1. Any value of 0.5 and over means the AI agent predicted the concept as present, and a value below 0.5 is not present. This value can be seen as how confident the model was. A value close to 0 or 1 is very confident, whereas a value close to 0.5 is not confident.'
+			intro: 'The AI agent represents each concept with a value between 0 and 1. Any value of 0.5 and over means the AI agent has detected the concept as present, and a value below 0.5 as not present. This value can be seen as how confident the model is. A value close to 0 or 1 is very confident, whereas a value close to 0.5 is not confident.'
 		},
 		{% if explanation_version == 1 %}
 		{
 			title: 'Explanation saliency',
 			element: document.getElementById('image_saliency_16'),
-			intro: 'Each concept explanation has an image which shows the saliency of what the artificial agent used to make the prediction. Red highlights pixels contributing towards the concept prediction and blue highlights pixels against the concept prediction.'
+			intro: 'Each concept explanation has an image which shows the saliency of what the artificial agent used from the sample image. Red highlights pixels contributing towards the concept detection and blue highlights pixels against the concept detection.'
 		},
 		{% endif %}
 		{
 			title: 'Interventions',
 			element: document.getElementById('16'),
-			intro: 'You can modify concept predictions if you believe they are incorrect or wish to see what the artificial agent would predict if they were different.'
+			intro: 'You can modify concepts if you believe they are incorrect or wish to see what label the artificial agent would suggest if they were different.'
 		},
 		{
 			title: 'Interventions',
@@ -236,12 +244,32 @@
 		{
 			title: 'Interventions continued',
 			element: document.getElementById('model-output'),
-			intro: 'By changing the concept prediction, the AI agent classification will be updated. In this case, there was no change.'
+			intro: 'By changing which concepts are detected, the AI\'s suggested label will be updated. In this case, there was no change.'
 		},
 		{
 			title: 'Reset concept predictions',
 			element: document.getElementById('16-reset'),
-			intro: 'You reset a concept prediction by pressing the reset button.'
+			intro: 'Concepts are reset by pressing the reset button.'
+		},
+		{
+			element: document.getElementById('sample-classification'),
+			intro: 'When you have evaluated each sample you will need to label them by selecting one of these options.'
+		},
+		{
+			element: document.getElementById('ai_use_select'),
+			intro: 'Select the checkboxes detailing how the AI influenced the label you selected.'
+		},
+		{
+			element: document.getElementById('ai_use-0'),
+			intro: 'Please select this option if the AI\'s suggested label helped you classify the sample.'
+		},
+		{
+			element: document.getElementById('ai_use-1'),
+			intro: 'Please select this option if the concept explanations helped you classify the sample.'
+		},
+		{
+			element: document.getElementById('ai_use-2'),
+			intro: 'Please select this option if you classified the sample without evaluating any of the AI agent\'s outputs.'
 		},
 		{
 			title: 'Contine to study',
@@ -251,9 +279,9 @@
 	});
 
 	{% if explanation_version == 0 %}
-		const update_step = 15
+		const update_step = 12
 	{% elif explanation_version == 1 %}
-		const update_step = 16
+		const update_step = 13
 	{% endif %}
 
 	intro.onbeforechange(function () {
@@ -379,8 +407,11 @@
 		orderConcepts("hl");
 
 		// clear select form radio buttons
+		document.getElementById("participant_malignant-0").checked = false;
+		document.getElementById("participant_malignant-1").checked = false;
 		document.getElementById("ai_use-0").checked = false;
 		document.getElementById("ai_use-1").checked = false;
+		document.getElementById("ai_use-2").checked = false;
 	};
 
 </script>

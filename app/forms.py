@@ -1,9 +1,24 @@
-from wtforms import StringField, BooleanField, RadioField, IntegerField, SelectField, HiddenField, TextAreaField, EmailField
-from wtforms.validators import DataRequired, length, NumberRange
+from wtforms import StringField, BooleanField, RadioField, IntegerField, SelectField, HiddenField, TextAreaField, EmailField, SelectMultipleField, widgets
+from wtforms.validators import DataRequired, length, NumberRange, StopValidation
 from flask import flash
 from flask_wtf import FlaskForm
 from werkzeug.local import LocalProxy
 from flask import current_app
+
+
+class MultiCheckboxField(SelectMultipleField):
+	widget = widgets.ListWidget(prefix_label=False)
+	option_widget = widgets.CheckboxInput()
+
+class MultiCheckboxAtLeastOne():
+	def __init__(self, message=None):
+		if not message:
+			message = 'At least one option must be selected.'
+		self.message = message
+
+	def __call__(self, form, field):
+		if len(field.data) == 0:
+			raise StopValidation(self.message)
 
 
 class ConsentForm(FlaskForm):
@@ -28,7 +43,9 @@ class DemographicForm(FlaskForm):
 
 
 class SampleForm(FlaskForm):
-	ai_use = RadioField('Select the option that applies', choices=[(1, "I used the AI predictions"), (2, "I did not use AI predictions")], validators=[DataRequired()])
+	ai_use = MultiCheckboxField('Select all that apply', choices=[(1, "I was influenced by the AI’s suggestion"), (2, "I was influenced by the concepts the AI detected"), (3, "I was not influenced by the AI")], validators=[MultiCheckboxAtLeastOne()], validate_choice=False)
+	participant_malignant = RadioField('Lable the sample', choices=[(0, "Seborrheic keratosis"), (1, "Malignant melanoma")], validators=[DataRequired()])
+
 
 
 class SurveyForm(FlaskForm):

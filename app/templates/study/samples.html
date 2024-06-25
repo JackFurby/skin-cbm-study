@@ -18,42 +18,51 @@
 							</div>
 							<div class="col-12">
 								<div class="card border-info mb-3">
-									<div class="card-header">
-									AI prediction
+									<div class="card-header h4">
+									AI suggestion
 									</div>
 									<div class="card-body">
-										<p class="card-text" id="task-out"></p>
+										<p class="card-text h6" id="task-out"></p>
 									</div>
 								</div>
 							</div>
 						</div>
 					</div>
 
-					<p class="h4 text-center mb-3">Please label the sample</p>
-
-					<form action="" method="post" class="mb-3" autocomplete="off" id="sample-submit-form">
+					<form action="" method="post" class="mb-3 mx-2" autocomplete="off" id="sample-submit-form">
 						{{ form.hidden_tag() }}
-						<p class="h6 text-center">Select the option that applies
-							<button class="btn btn-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_ai_use" aria-expanded="false" aria-controls="collapse_ai_use">
-								<i class="bi bi-question-circle-fill"></i>
-							</button>
-						</p>
-						<div class="collapse border border-info-subtle p-1 rounded" id="collapse_ai_use">
-							<p><b>I used the AI predictions</b>: You looked at, interacted with or agreed with the concept predictions or sample label prediction.</p>
-							<p><b>I did not use AI predictions</b>: You did not look at the AI predictions before labeling the sample.</p>
-						</div>
-						<div class="mb-3 text-center">
-							{% for subfield in form.ai_use %}
-								<div class="form-check form-check-inline">
+						<p class="h6">Label the sample</p>
+						<div class="mb-3">
+							{% for subfield in form.participant_malignant %}
+								<div class="form-check">
 									{{ subfield (class_="form-check-input") }}
 									{{ subfield.label (class_="form-check-label") }}
 								</div>
 							{% endfor %}
 						</div>
-						<p class="h6 text-center">Label the sample</p>
-						<div class="d-flex justify-content-center">
-							<button type="submit" name=submit class="btn btn-secondary mx-2", value="malignant">Malignant melanoma</button>
-							<button type="submit" name=submit class="btn btn-secondary mx-2", value="benign">Seborrheic keratosis</button>
+						<p class="h6">Select all that apply
+							<button class="btn btn-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_ai_use" aria-expanded="false" aria-controls="collapse_ai_use">
+								<i class="bi bi-question-circle-fill"></i>
+							</button>
+						</p>
+						<div class="collapse border border-info-subtle p-1 rounded mb-1" id="collapse_ai_use">
+							<p><b>I was influenced by the AI’s suggestion</b>: The suggested label the AI provided helped you label the sample.</p>
+							<p><b>I was influenced by the concepts the AI detected</b>: The concepts the AI detected helped you lable the sample.</p>
+							<p><b>I was not influenced by the AI</b>: You labeled the sample without using at the AI outputs.</p>
+						</div>
+						{% for error in form.ai_use.errors %}
+							<p class="text-danger">{{ error }}</p>
+						{% endfor %}
+						<div class="mb-3">
+							{% for subfield in form.ai_use %}
+								<div class="form-check">
+									{{ subfield (class_="form-check-input") }}
+									{{ subfield.label (class_="form-check-label") }}
+								</div>
+							{% endfor %}
+						</div>
+						<div class="">
+							<button type="submit" name=submit class="btn btn-primary">Submit</button>
 						</div>
 					</form>
 				</div>
@@ -61,7 +70,7 @@
 
 			<div class="col-12 col-md-5">
 
-			<h4>Predicted concepts</h4>
+			<h4>Detected concepts</h4>
 
 			<label for="concept_order" class="form-label">Concept order</label>
 			<select class="form-select mb-3" aria-label="concept_order" id="concept_order" onChange="orderConcepts(this.options[this.selectedIndex].value, true)">
@@ -362,9 +371,12 @@
 		var model_pred = predict();
 		orderConcepts("hl", false);
 
-		// clear select form radio buttons
+		// clear select form radio and check buttons
+		document.getElementById("participant_malignant-0").checked = false;
+		document.getElementById("participant_malignant-1").checked = false;
 		document.getElementById("ai_use-0").checked = false;
 		document.getElementById("ai_use-1").checked = false;
+		document.getElementById("ai_use-2").checked = false;
 	};
 
 </script>
