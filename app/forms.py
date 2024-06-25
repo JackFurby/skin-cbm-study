@@ -10,6 +10,7 @@ class MultiCheckboxField(SelectMultipleField):
 	widget = widgets.ListWidget(prefix_label=False)
 	option_widget = widgets.CheckboxInput()
 
+
 class MultiCheckboxAtLeastOne():
 	def __init__(self, message=None):
 		if not message:
@@ -18,6 +19,18 @@ class MultiCheckboxAtLeastOne():
 
 	def __call__(self, form, field):
 		if len(field.data) == 0:
+			raise StopValidation(self.message)
+
+
+class MultiCheckboxNotMoreThan():
+	def __init__(self, max, message=None):
+		if not message:
+			message = f"You cannot select more than {max} options."
+		self.message = message
+		self.max = max
+
+	def __call__(self, form, field):
+		if len(field.data) > self.max:
 			raise StopValidation(self.message)
 
 
@@ -43,7 +56,7 @@ class DemographicForm(FlaskForm):
 
 
 class SampleForm(FlaskForm):
-	ai_use = MultiCheckboxField('Select all that apply', choices=[(1, "I was influenced by the AI’s suggestion"), (2, "I was influenced by the concepts the AI detected"), (3, "I was not influenced by the AI")], validators=[MultiCheckboxAtLeastOne()], validate_choice=False)
+	ai_use = MultiCheckboxField('Select all that apply', choices=[(1, "I was influenced by the AI’s suggestion"), (2, "I was influenced by the concepts the AI detected"), (3, "I was not influenced by the AI")], validators=[MultiCheckboxAtLeastOne(), MultiCheckboxNotMoreThan(max=2)], validate_choice=False)
 	participant_malignant = RadioField('Lable the sample', choices=[(0, "Seborrheic keratosis"), (1, "Malignant melanoma")], validators=[DataRequired()])
 
 
