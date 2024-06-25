@@ -116,8 +116,6 @@ def samples():
 	# save participant sample classification
 	if form.validate_on_submit():
 
-		print(request.form)
-
 		# update db entery with participant selection
 		samples_left = session["samples_left"]
 		sample = db.session.query(Sample).filter_by(participant_id=session["participant_id"], sample_id=samples_left[-1]).first()
@@ -126,8 +124,6 @@ def samples():
 		sample.ai_use = ",".join(request.form.getlist("ai_use"))  # save checkboxes selected as a string. Each character is one option selected
 		db.session.add(sample)
 		db.session.commit()
-
-		print(sample)
 
 		# remove sample from samples_left
 		del samples_left[-1]
