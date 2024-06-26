@@ -70,7 +70,7 @@
 
 			<div class="col-12 col-md-5">
 
-			<h4>Detected concepts</h4>
+			<h4>AI detected concepts</h4>
 
 			<label for="concept_order" class="form-label">Concept order</label>
 			<select class="form-select mb-3" aria-label="concept_order" id="concept_order" onChange="orderConcepts(this.options[this.selectedIndex].value, true)">
@@ -85,19 +85,27 @@
 						<div class="card mb-3">
 							{% if explanation_version == 0 %}
 								<div class="card-body">
-									<div class="d-flex justify-content-between mb-2">
-										<p class="card-text">{{ concept[3] }}</p>
-										<button class="btn btn-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDesc_{{ concept_id }}" aria-expanded="false" aria-controls="collapseDesc_{{ concept_id }}">
+									<div class="d-flex justify-content-between">
+										<p class="card-text mb-0">{{ concept[3] }}</p>
+										<button class="btn btn-light btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDesc_{{ concept_id }}" aria-expanded="false" aria-controls="collapseDesc_{{ concept_id }}">
 											<i class="bi bi-question-circle-fill"></i>
 										</button>
 									</div>
-									<div class="collapse border border-info-subtle p-1 rounded" id="collapseDesc_{{ concept_id }}">
+									<div class="collapse border border-info-subtle p-1 rounded mb-2" id="collapseDesc_{{ concept_id }}">
 										<p>{{ concept[4] }}</p>
 									</div>
 									<input type="hidden" id="{{ concept_id }}-initial" value="{{ concept[2]|round(2) }}">
-									<input type="range" class="form-range" min="0" max="1" step="0.01" value="{{ concept[2]|round(2) }}" id="{{ concept_id }}" name="{{ concept_id }}" onchange="enableBtn('{{ concept_id }}-reset'); updateValue('{{ concept_id }}'); logUpdate('{{ concept_id }}', '{{ sample_id }}', false);">
-									<p><span class="badge rounded-pill bg-secondary" id="{{ concept_id }}-badge">{{ concept[2]|round(2) }}</span></p>
-									<button type="button" class="btn btn-secondary" onclick="resetValue({{ concept_id }})" id="{{ concept_id }}-reset" disabled>Reset</button>
+									<div class="d-flex">
+										<div>
+											<button type="button" class="btn btn-secondary btn-sm" onclick="resetValue({{ concept_id }})" id="{{ concept_id }}-reset" disabled>Reset</button>
+										</div>
+										<div class="flex-grow-1 mx-2">
+											<input type="range" class="form-range align-middle" min="0" max="1" step="0.01" value="{{ concept[2]|round(2) }}" id="{{ concept_id }}" name="{{ concept_id }}" onchange="enableBtn('{{ concept_id }}-reset'); updateValue('{{ concept_id }}'); logUpdate('{{ concept_id }}', '{{ sample_id }}', false);">
+										</div>
+										<div class="">
+											<p class="align-middle"><span class="badge rounded-pill bg-secondary" id="{{ concept_id }}-badge">{{ concept[2]|round(2) }}</span></p>
+										</div>
+									</div>
 								</div>
 							{% elif explanation_version == 1 %}
 								<div class="row g-0">
@@ -106,19 +114,27 @@
 									</div>
 									<div class="col-md-8">
 										<div class="card-body">
-												<div class="d-flex justify-content-between mb-2">
-													<p class="card-text">{{ concept[3] }}</p>
-													<button class="btn btn-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDesc_{{ concept_id }}" aria-expanded="false" aria-controls="collapseDesc_{{ concept_id }}">
+												<div class="d-flex justify-content-between">
+													<p class="card-text mb-0">{{ concept[3] }}</p>
+													<button class="btn btn-light btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDesc_{{ concept_id }}" aria-expanded="false" aria-controls="collapseDesc_{{ concept_id }}">
 														<i class="bi bi-question-circle-fill"></i>
 													</button>
 												</div>
-												<div class="collapse border border-info-subtle p-1 rounded" id="collapseDesc_{{ concept_id }}">
+												<div class="collapse border border-info-subtle p-1 rounded mb-2" id="collapseDesc_{{ concept_id }}">
 													<p>{{ concept[4] }}</p>
 												</div>
 												<input type="hidden" id="{{ concept_id }}-initial" value="{{ concept[2]|round(2) }}">
-												<input type="range" class="form-range" min="0" max="1" step="0.01" value="{{ concept[2]|round(2) }}" id="{{ concept_id }}" name="{{ concept_id }}" onchange="enableBtn('{{ concept_id }}-reset'); updateValue('{{ concept_id }}'); logUpdate('{{ concept_id }}', '{{ sample_id }}', false);">
-												<p><span class="badge rounded-pill bg-secondary" id="{{ concept_id }}-badge">{{ concept[2]|round(2) }}</span></p>
-												<button type="button" class="btn btn-secondary" onclick="resetValue({{ concept_id }})" id="{{ concept_id }}-reset" disabled>Reset</button>
+												<div class="d-flex">
+													<div>
+														<button type="button" class="btn btn-secondary btn-sm" onclick="resetValue({{ concept_id }})" id="{{ concept_id }}-reset" disabled>Reset</button>
+													</div>
+													<div class="flex-grow-1 mx-2">
+														<input type="range" class="form-range align-middle" min="0" max="1" step="0.01" value="{{ concept[2]|round(2) }}" id="{{ concept_id }}" name="{{ concept_id }}" onchange="enableBtn('{{ concept_id }}-reset'); updateValue('{{ concept_id }}'); logUpdate('{{ concept_id }}', '{{ sample_id }}', false);">
+													</div>
+													<div>
+														<p class="align-middle"><span class="badge rounded-pill bg-secondary" id="{{ concept_id }}-badge">{{ concept[2]|round(2) }}</span></p
+													</div>
+												</div>
 										</div>
 									</div>
 								</div>
