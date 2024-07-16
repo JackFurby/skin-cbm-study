@@ -174,7 +174,6 @@ def samples():
 
 		0 = Concept predictions only (with the option to show saliency maps???)
 		1 = Concept predictions and saliency maps
-		2 = Concept predictions + explanation by example
 		"""
 
 		return render_template('study/samples.html', title='CBM Study', sample_id=sample_id, concept_out=concept_preds, form=form, model_name=model_name, explanation_version=session["explanation_version"])
