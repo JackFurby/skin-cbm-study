@@ -49,7 +49,7 @@ class ConsentForm(FlaskForm):
 
 
 class DemographicForm(FlaskForm):
-	skin_experience = RadioField('I am an experienced at identifying skin disease from images', choices=["Strongly agree", "agree", "Neutral", "Disagree", "Strongly Disagree"], validators=[DataRequired()])
+	skin_experience = RadioField('I am experienced at identifying skin disease from images', choices=["Strongly agree", "agree", "Neutral", "Disagree", "Strongly Disagree"], validators=[DataRequired()])
 	computer_experience = RadioField('I am experienced in computer science / computing', choices=["Strongly agree", "agree", "Neutral", "Disagree", "Strongly Disagree"], validators=[DataRequired()])
 	age = IntegerField('Age', validators=[DataRequired(), NumberRange(min=18)])
 	gender = SelectField('Gender', choices=[("", "Choose..."), ("Male", "male"), ("Female", "female"), ("Other", "other"),], validators=[DataRequired()])
@@ -66,7 +66,7 @@ class SurveyForm(FlaskForm):
 	understood = RadioField('I understood the explanations within the context of my work', choices=[(5, "Strongly agree"), (4, "agree"), (3, "Neutral"), (2, "Disagree"), (1, "Strongly Disagree")], validators=[DataRequired()])
 	change_detail_level = RadioField('I could change the level of detail on demand', choices=[(5, "Strongly agree"), (4, "agree"), (3, "Neutral"), (2, "Disagree"), (1, "Strongly Disagree")], validators=[DataRequired()])
 	need_support = RadioField('I did not need support to understand the explanations', choices=[(5, "Strongly agree"), (4, "agree"), (3, "Neutral"), (2, "Disagree"), (1, "Strongly Disagree")], validators=[DataRequired()])
-	understood_causality = RadioField('I found the explanations helped me to understandcausality', choices=[(5, "Strongly agree"), (4, "agree"), (3, "Neutral"), (2, "Disagree"), (1, "Strongly Disagree")], validators=[DataRequired()])
+	understood_causality = RadioField('I found the explanations helped me to understand causality', choices=[(5, "Strongly agree"), (4, "agree"), (3, "Neutral"), (2, "Disagree"), (1, "Strongly Disagree")], validators=[DataRequired()])
 	use_with_knowledge = RadioField('I was able to use the explanations with my knowledgebase', choices=[(5, "Strongly agree"), (4, "agree"), (3, "Neutral"), (2, "Disagree"), (1, "Strongly Disagree")], validators=[DataRequired()])
 	no_inconsistencies = RadioField('I did not find inconsistencies between explanations', choices=[(5, "Strongly agree"), (4, "agree"), (3, "Neutral"), (2, "Disagree"), (1, "Strongly Disagree")], validators=[DataRequired()])
 	learn_to_understand = RadioField('I think that most people would learn to understand the explanations very quickly', choices=[(5, "Strongly agree"), (4, "agree"), (3, "Neutral"), (2, "Disagree"), (1, "Strongly Disagree")], validators=[DataRequired()])

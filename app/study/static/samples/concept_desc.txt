@@ -1,22 +1,22 @@
-An elevated, solid lesion less than 1 cm
-A flat, elevated lesion, usually greater than 1 cm
-An elevated, pus-filled lesion, usually less than 1 cm
-An elevated, fluid-filled lesion, usually greater than 1 cm
-A flat lesion greater than 1 cm, without elevation or depression
-An elevated, solid lesion greater than 1 cm
-Full-thickness loss of a surface layer and extending into underlying tissues. In the skin this means loss of the epidermis and at least part of the dermis; it may extend into the subcutaneous tissue.Crust is the formation of dried serum, blood or pus on the surface of the skin.
-The formation of dried serum, blood or pus on the surface of the skin.
-The superficial or partial destruction of a surface such as skin, that does not scar on healing.
-The localized shrinking of the skin which results in paper-thin, wrinkled skin with easily visible vessels
-Exudate would typically appear as a clear or slightly yellow fluid oozing from the affected area. It may be minimal in quantity and often associated with minimal inflammation.
-Persistently dilated capillaries or other small blood vessels in the skin; widened existing vessels and not new blood vessels.
-Scaling is the visible accumulation of keratin squames due to an increase in the dead cells on the skin surface (stratum corneum).
-New scars have a pink to reddish colour. As a scar matures, it often turns lighter or darker than your skin. Most scars are flat, and the skin on top tends to look wrinkled.
-Skin that is easily crumbled or broken, possibly exhibiting a tendency for flakiness or the formation of small, fragile lesions that may bleed minimally upon manipulation.
-Raised, rounded area on the skin's surface, typically smooth and symmetrical in shape.
-Darkened patches or spots on the skin, varying in size and intensity.
-Areas of skin that appear lighter or paler than the surrounding skin.
-Patches of discolouration or mild irritation.
-Patches of discoloured skin, ranging from pale yellow to golden hues.
-Areas appearing darker than the surrounding skin. This could manifest as patches or spots with irregular borders, varying in size and distribution across the affected areas.
-Red skin due to an increased blood supply; may be applied to any red coloured dermatosis.
+Papule | A small elevated lesion, normally less than 5mm in diameter.
+Plaque | A flat-topped, elevated lesion, usually greater than 1 cm.
+Pustule | An elevated, pus-filled lesion, usually less than 1 cm.
+Bulla | An elevated, fluid-filled lesion, usually greater than 1 cm.
+Macule | A colour change without any raised or palpable component.
+Nodule | A spherically-shaped lesion, around 10mm in diameter.
+Ulcer | Full-thickness loss of a surface layer and extending into underlying tissues. In the skin this means loss of the epidermis and at least part of the dermis; it may extend into the subcutaneous tissue.Crust is the formation of dried serum, blood or pus on the surface of the skin.
+Crust | The formation of dried serum, blood or pus on the surface of the skin.
+Erosion | The superficial or partial destruction of a surface such as skin, that does not scar on healing.
+Atrophy | The localized shrinking of the skin which results in paper-thin, wrinkled skin with easily visible vessels.
+Exudate | Exudate would typically appear as a clear or slightly yellow fluid oozing from the affected area. It may be minimal in quantity and often associated with minimal inflammation.
+Telangiectasia | Persistently dilated capillaries or other small blood vessels in the skin; widened existing vessels and not new blood vessels.
+Scale | Scaling is the visible accumulation of keratin squames due to an increase in the dead cells on the skin surface (stratum corneum).
+Scar | New scars have a pink to reddish colour. As a scar matures, it often turns lighter or darker than your skin. Most scars are flat, and the skin on top tends to look wrinkled.
+Friable | Skin that is easily crumbled or broken, possibly exhibiting a tendency for flakiness or the formation of small, fragile lesions that may bleed minimally upon manipulation.
+Dome-shaped | Raised, rounded area on the skin's surface, typically smooth and symmetrical in shape.
+Brown | Darkened patches or spots on the skin, varying in size and intensity.
+White | Areas of skin that appear lighter or paler than the surrounding skin.
+Purple | Patches of discolouration or mild irritation.
+Yellow | Patches of discoloured skin, ranging from pale yellow to golden hues.
+Black | Areas appearing darker than the surrounding skin. This could manifest as patches or spots with irregular borders, varying in size and distribution across the affected areas.
+Erythema | Red skin due to an increased blood supply; may be applied to any red coloured dermatosis.

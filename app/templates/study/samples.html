@@ -11,9 +11,13 @@
 				<div class="">
 					<div class="container-fluid" style="max-width: 1140px;">
 						<div class="row mb-3">
-							<div class="col-12">
-								<div class="m-auto" id="input_img_container">
-									<img class="mb-3 h-auto" src="{{ url_for('study.get_image', filename=sample_id|string + '/input.jpeg') }}" width="100%" id="model_input">
+							<div class="col-12 mb-3">
+								<div class="zoomist-container">
+									<div class="zoomist-wrapper" style="background-color: white;">
+										<div class="zoomist-image" id="input_img_container">
+											<img class="h-auto" src="{{ url_for('study.get_image', filename=sample_id|string + '/input.jpeg') }}" width="100%" id="model_input">
+										</div>
+									</div>
 								</div>
 							</div>
 							<div class="col-12">
@@ -110,7 +114,13 @@
 							{% elif explanation_version == 1 %}
 								<div class="row g-0">
 									<div class="col-md-4" id="{{ concept_id }}_img_container">
-										<img class="img-fluid rounded-start w-100 h-auto" src="{{ url_for('study.get_image', filename=sample_id|string + '/' + concept[1]|string) }}">
+										<div class="zoomist-container-{{ concept_id }}">
+											<div class="zoomist-wrapper" style="background-color: white;">
+												<div class="zoomist-image" id="{{ concept_id }}_img_container">
+													<img class="img-fluid rounded-start w-100 h-auto" src="{{ url_for('study.get_image', filename=sample_id|string + '/' + concept[1]|string) }}">
+												</div>
+											</div>
+										</div>
 									</div>
 									<div class="col-md-8">
 										<div class="card-body">
@@ -132,7 +142,7 @@
 														<input type="range" class="form-range align-middle" min="0" max="1" step="0.01" value="{{ concept[2]|round(2) }}" id="{{ concept_id }}" name="{{ concept_id }}" onchange="enableBtn('{{ concept_id }}-reset'); updateValue('{{ concept_id }}'); logUpdate('{{ concept_id }}', '{{ sample_id }}', false);">
 													</div>
 													<div>
-														<p class="align-middle"><span class="badge rounded-pill bg-secondary" id="{{ concept_id }}-badge">{{ concept[2]|round(2) }}</span></p
+														<p class="align-middle"><span class="badge rounded-pill bg-secondary" id="{{ concept_id }}-badge">{{ concept[2]|round(2) }}</span></p>
 													</div>
 												</div>
 										</div>
@@ -155,7 +165,7 @@
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.16.3/dist/ort.min.js"></script>
-<script type=text/javascript src="{{url_for('static', filename='js/js-image-zoom.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/zoomist@2/zoomist.umd.js"></script>
 <script type="text/javascript">
 
 	var last_recorded_action_time = Date.now();
@@ -355,32 +365,30 @@
 		})
 	{% endfor %}
 
-	// image zoom
-	var imageZoomMainOptions = {
-		fillContainer: true,
-		offset: {vertical: 0, horizontal: 0},
-		zoomPosition: "bottom",
-		zoomStyle: "z-index: 999;",
-	};
-
-	var imageZoomExplainOptions = {
-		fillContainer: true,
-		scale: 1.1,
-		zoomWidth: 300,
-		width: 200,
-		height: 200,
-		offset: {vertical: 0, horizontal: 0},
-		zoomPosition: "bottom",
-		zoomStyle: "z-index: 999;",
-	};
-
-	//new ImageZoom(document.getElementById("input_img_container"), imageZoomMainOptions);
-
 	{% if explanation_version == 1 %}
 		{% for concept in concept_out %}
-			new ImageZoom(document.getElementById("{{ concept[0] }}_img_container"), imageZoomExplainOptions);
+		new Zoomist('.zoomist-container-{{ concept[0] }}', {
+			// Optional parameters
+			maxScale: 4,
+			bounds: true,
+			// if you need slider
+			slider: false,
+			// if you need zoomer
+			zoomer: false
+		});
 		{% endfor %}
 	{% endif %}
+
+	// main image
+	new Zoomist('.zoomist-container', {
+		// Optional parameters
+		maxScale: 4,
+		bounds: true,
+		// if you need slider
+		slider: false,
+		// if you need zoomer
+		zoomer: true
+	});
 
 	// run all functions for the inital page load
 	window.onload = function() {

@@ -97,13 +97,15 @@ def tutorial():
 		content = (f.read().decode('latin1').strip()).split("\n")
 		for line in content:
 			concept = line.split(" ")
-			concept_preds.append([int(concept[0].strip()), concept[1].strip(), float(concept[2].strip()), concept[3].strip()])  # concept index, concept explanation file name, concept prediction, concept string
+			concept_preds.append([int(concept[0].strip()), concept[1].strip(), float(concept[2].strip())])  # concept index, concept explanation file name, concept prediction, concept string
 
 	# open txt file with concept predictions and concept explanation file names
 	with bp.open_resource(f"static/samples/concept_desc.txt") as f:
 		content = (f.read().decode('latin1').strip()).split("\n")
 		for idx, line in enumerate(content):
-			concept_preds[idx].append(line)  # Add concept description to concept item
+			line = [i.strip() for i in line.split('|')]  # concept string, concept description
+			concept_preds[idx].append(line[0])  # Add concept string to concept item
+			concept_preds[idx].append(line[1])  # Add concept description to concept item
 
 	model_name = "CtoY_indi_dense_404_onnx_model.onnx"
 
@@ -158,13 +160,15 @@ def samples():
 			content = (f.read().decode('latin1').strip()).split("\n")
 			for line in content:
 				concept = line.split(" ")
-				concept_preds.append([int(concept[0].strip()), concept[1].strip(), float(concept[2].strip()), concept[3].strip()])  # concept index, concept explanation file name, concept prediction, concept string
+				concept_preds.append([int(concept[0].strip()), concept[1].strip(), float(concept[2].strip())])  # concept index, concept explanation file name, concept prediction
 
 		# open txt file with concept predictions and concept explanation file names
 		with bp.open_resource(f"static/samples/concept_desc.txt") as f:
 			content = (f.read().decode('latin1').strip()).split("\n")
 			for idx, line in enumerate(content):
-				concept_preds[idx].append(line)  # Add concept description to concept item
+				line = [i.strip() for i in line.split('|')]  # concept string, concept description
+				concept_preds[idx].append(line[0])  # Add concept string to concept item
+				concept_preds[idx].append(line[1])  # Add concept description to concept item
 
 		model_name = "CtoY_indi_dense_404_onnx_model.onnx"
 
