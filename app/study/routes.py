@@ -82,10 +82,15 @@ def survey():
 			session["demographic_id"] = demographic.id
 			session["explanation_version"] = participant.explanation_version
 			session["demographic_survey"] = True
-			return redirect('/tutorial')
+			return redirect('/ai_intro')
 	else:
-		return redirect('/tutorial')
+		return redirect('/ai_intro')
 	return render_template('study/survey.html', title='Demographic survey', form=form)
+
+
+@bp.route('/ai_intro', methods=["GET"])
+def ai_brief():
+	return render_template('study/ai_intro.html', title='AI introduction')
 
 
 @bp.route('/tutorial')

@@ -1,0 +1,35 @@
+{% extends "template_parts/base.html" %}
+
+
+{% block content %}
+<main class="col px-md-4">
+	<div class="bg-white p-3 mt-4">
+		<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3">
+			<h1 class="h2">AI introduction</h1>
+		</div>
+		<div class="">
+
+			<p>We have created an artificial intelligence (AI) agent to detect skin diseases from images. Skin diseases are detected in a two-step process. First, the AI agent detects 22 visual observations, which we call concepts. These concepts are then used to allow the AI agent to reason about the final label it will assign to the image.</p>
+
+			<div class="row mb-3">
+				<div class="col-12 col-sm-10 col-md-8 mb-3 mx-auto">
+					<figure>
+						<img class="h-auto" src="{{ url_for('study.get_image_tutorial', filename='/CBM_skin.jpeg') }}" width="100%">
+						<figcaption>The AI agent suggests a label for a given image in a two-step process. (1) The AI agent analyses a given image and detects the presence or absence of 22 concepts before (2) using the concept outputs to suggest a label.</figcaption>
+					</figure>
+				</div>
+			</div>
+
+			<p>The AI agent was trained on 114 skin conditions, but for this study, we are only looking at images of <b>seborrheic keratosis</b> and <b>malignant melanoma</b>. Behind the scenes, the AI agent will be detecting concepts for the full 114 skin diseases which may become apparent from the detected concepts. It should also be understood the AI agent can make mistakes. Therefore you should view the AI agent as an assistant.</p>
+
+			<p>In this study, we are evaluating the AI agent's capabilities. Please do not see this as a new tool for your work as it is not designed to be used outside of research.</p>
+
+			<div class="">
+				<a class="btn btn-primary" href="{{ url_for('study.tutorial') }}" role="button">Continue to the tutorial</a>
+			</div>
+		</div>
+	</div>
+
+</main>
+
+{% endblock %}
