@@ -135,7 +135,7 @@
 										</div>
 									{% elif explanation_version == 1 %}
 										<div class="row g-0">
-											<div class="col-md-4">
+											<div class="col-md-4 overflow-hidden">
 												<div class="zoomist-container-{{ concept_id }}">
 													<div class="zoomist-wrapper" style="background-color: white;">
 														<div class="zoomist-image" id="{{ concept_id }}_img_container">
@@ -219,11 +219,6 @@
 			intro: 'You will be presented with sample images and the AI agent\'s suggested label.'
 		},
 		{
-			title: 'AI sugestion',
-			element: document.getElementById('model-output'),
-			intro: 'The AI agent will suggest a label for each sample.'
-		},
-		{
 			title: 'Concept explanations',
 			element: document.getElementById('concept_list_title'),
 			intro: 'The suggested label is based on the detection of 22 concepts. The concepts can be inspected to explain why a label was suggested.'
@@ -252,7 +247,7 @@
 		{
 			title: 'Explanation saliency',
 			element: document.getElementById('image_saliency_16'),
-			intro: 'Each concept explanation has an image which shows the saliency of what the artificial agent used from the sample image. Red highlights pixels contributing towards the concept detection and blue highlights pixels against the concept detection.'
+			intro: 'Each concept explanation has an image which shows the saliency of what the artificial agent used from the sample image. Red highlights pixels contributing towards the concept detection and blue highlights pixels against the concept detection. You can zoom in on the image using the scroll wheel on your mouse.'
 		},
 		{% endif %}
 		{
@@ -303,9 +298,9 @@
 	});
 
 	{% if explanation_version == 0 %}
-		const update_step = 12
+		const update_step = 11
 	{% elif explanation_version == 1 %}
-		const update_step = 13
+		const update_step = 12
 	{% endif %}
 
 	intro.onbeforechange(function () {
