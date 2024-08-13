@@ -61,21 +61,22 @@ def survey():
 	if "demographic_survey" not in session:
 		form = DemographicForm()
 		if form.validate_on_submit():
-			demographic = Demographic(
-				skin_experience=form.skin_experience.data,
-				computer_experience=form.computer_experience.data,
-				age=form.age.data,
-				gender=form.gender.data
-			)
-			db.session.add(demographic)
-			db.session.commit()
-
 			explanatons_list = [0, 1]  # 0: no saliency maps, 1: saliency maps
 
 			participant = Participant(
 				explanation_version=random.choice(explanatons_list)  # explanation version chosen randomly. This should give us an even split between the two
 			)
 			db.session.add(participant)
+			db.session.commit()
+
+			demographic = Demographic(
+				skin_experience=form.skin_experience.data,
+				computer_experience=form.computer_experience.data,
+				age=form.age.data,
+				gender=form.gender.data,
+				participant_id=participant.id
+			)
+			db.session.add(demographic)
 			db.session.commit()
 
 			session["participant_id"] = participant.id

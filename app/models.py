@@ -28,6 +28,7 @@ class Consent(db.Model):
 
 class Demographic(db.Model):
 	id: so.Mapped[int] = so.mapped_column(primary_key=True)
+	participant_id: so.Mapped[Optional[int]] = so.mapped_column()  # This created issues if it was a foreignKey???
 	skin_experience: so.Mapped[str] = so.mapped_column(sa.String(32))
 	computer_experience: so.Mapped[str] = so.mapped_column(sa.String(32))
 	age: so.Mapped[int] = so.mapped_column()
