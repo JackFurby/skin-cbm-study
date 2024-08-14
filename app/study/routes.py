@@ -274,9 +274,6 @@ def get_consent_form():
 		consent.participant_name,
 		consent.date.strftime("%d/%m/%Y")
 	]
-
-	print(consent.date)
-	print(datetime.today())
 	return send_file(get_consent_pdf(edits, bp.static_folder + "/Consent-Form.pdf"), as_attachment=True, download_name='Consent-Form.pdf', mimetype='application/pdf')
 
 
