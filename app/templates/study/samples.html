@@ -12,10 +12,14 @@
 					<div class="container-fluid" style="max-width: 1140px;">
 						<div class="row mb-3">
 							<div class="col-12 mb-3">
-								<div class="zoomist-container">
-									<div class="zoomist-wrapper" style="background-color: white;">
-										<div class="zoomist-image" id="input_img_container">
-											<img class="h-auto" src="{{ url_for('study.get_image', filename=sample_id|string + '/input.jpeg') }}" width="100%" id="model_input">
+
+								<div class="border rounded overflow-hidden bg-light">
+									<h5 class="px-3 pt-1">Sample: {{sample_count}}</h5>
+									<div class="zoomist-container">
+										<div class="zoomist-wrapper" style="background-color: white;">
+											<div class="zoomist-image" id="input_img_container">
+												<img class="h-auto" src="{{ url_for('study.get_image', filename=sample_id|string + '/input.jpeg') }}" width="100%" id="model_input">
+											</div>
 										</div>
 									</div>
 								</div>
@@ -117,7 +121,7 @@
 										<div class="zoomist-container-{{ concept_id }}">
 											<div class="zoomist-wrapper" style="background-color: white;">
 												<div class="zoomist-image" id="{{ concept_id }}_img_container">
-													<img class="img-fluid w-100 h-auto" src="{{ url_for('study.get_image', filename=sample_id|string + '/' + concept[1]|string) }}">
+													<img loading="lazy" class="img-fluid w-100 h-auto" src="{{ url_for('study.get_image', filename=sample_id|string + '/' + concept[1]|string) }}">
 												</div>
 											</div>
 										</div>

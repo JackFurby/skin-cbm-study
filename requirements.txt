@@ -8,3 +8,4 @@ opencv-python==4.8.1.*
 imageio_ffmpeg==0.4.*
 imageio==2.33.*
 wadllib==1.3.*
+pypdf2==3.0.*

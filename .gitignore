@@ -164,3 +164,4 @@ cython_debug/
 app.db
 skin-study.pub
 skin-study
+app/study/static/Consent-Form.pdf
