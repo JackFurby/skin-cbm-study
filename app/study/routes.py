@@ -59,13 +59,23 @@ def forms():
 
 @bp.route('/survey', methods=['GET', 'POST'])
 def survey():
+
 	if "demographic_survey" not in session:
 		form = DemographicForm()
 		if form.validate_on_submit():
 			explanatons_list = [0, 1]  # 0: no saliency maps, 1: saliency maps
 
+			# place the explanation versions participants have used into buckets
+			completed_participants = [participant.participant_id for participant in Demographic.query.filter(Demographic.completed_study==True).all()]
+			model_explanatons_counts = []
+			for ex in explanatons_list:
+				#count = Participant.query.filter(Participant.explanation_version==ex, Participant.model_name==model, Participant.id.in_(completed_participants)).count()  <<<<<< use this if we want to only count complted studies
+				count = Participant.query.filter(Participant.explanation_version==ex).count()
+				model_explanatons_counts.append(count)
+			min_value_index = model_explanatons_counts.index(min(model_explanatons_counts))
+
 			participant = Participant(
-				explanation_version=random.choice(explanatons_list)  # explanation version chosen randomly. This should give us an even split between the two
+				explanation_version=min_value_index  # explanation version is selected so the count is balanced between the two explanation versions
 			)
 			db.session.add(participant)
 			db.session.commit()
