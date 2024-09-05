@@ -144,6 +144,8 @@ def samples():
 		db.session.add(sample)
 		db.session.commit()
 
+		print(sample)
+
 		# remove sample from samples_left
 		del samples_left[-1]
 		session["samples_left"] = samples_left
@@ -208,7 +210,7 @@ def model_prediction():
 	sample = db.session.query(Sample).filter_by(participant_id=session["participant_id"], sample_id=request.form.get("sample_id")).first()
 	if sample != None:
 		if sample.model_malignant == None:
-			sample.model_malignant = True if request.form.get("model_malignant") == 'malignant' else False
+			sample.model_malignant = True if request.form.get("model_malignant") == 'malignant melanoma' else False
 			db.session.add(sample)
 			db.session.commit()
 			return jsonify("Action logged")
@@ -300,10 +302,12 @@ def log_range_update():
 		concept_id=int(request.form.get("concept_id")),
 		sample_id=int(request.form.get("sample_id")),
 		reset_pressed=True if request.form.get("reset_pressed") == 'true' else False,
-		model_malignant=True if request.form.get("model_malignant") == 'malignant' else False
+		model_malignant=True if request.form.get("model_malignant") == 'malignant melanoma' else False
 	)
 	db.session.add(action)
 	db.session.commit()
+
+	print(action)
 
 	return jsonify("Action logged")
 

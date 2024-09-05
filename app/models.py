@@ -66,7 +66,7 @@ class Action(db.Model):
 	updated_at: so.Mapped[datetime] = so.mapped_column(default=lambda: datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
 
 	def __repr__(self):
-		return f'<Action {self.id}, {self.participant_id}, {self.type}, {self.last_action_time}, {self.action_time}, {self.update_value}, {self.concept_id}, {self.sample_id}, {self.reset_pressed}, {self.model_malignant}>'
+		return f'<Action id:{self.id}, participant_id:{self.participant_id}, type:{self.type}, last_action_time:{self.last_action_time}, action_time:{self.action_time}, update_value:{self.update_value}, concept_id:{self.concept_id}, sample_id:{self.sample_id}, reset_pressed:{self.reset_pressed}, model_malignant:{self.model_malignant}>'
 
 
 class ConceptSort(db.Model):
@@ -95,7 +95,7 @@ class Sample(db.Model):
 	updated_at: so.Mapped[datetime] = so.mapped_column(default=lambda: datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
 
 	def __repr__(self):
-		return f'<Sample {self.id}, {self.participant_id}, {self.participant_malignant}, {self.model_malignant}, {self.ai_use}, {self.start_time}, {self.complete_time}>'
+		return f'<Sample id:{self.id}, participant_id:{self.participant_id}, sample_id{self.sample_id}, participant_malignant:{self.participant_malignant}, model_malignant:{self.model_malignant}, ai_use:{self.ai_use}, start_time:{self.start_time}, complete_time:{self.complete_time}>'
 
 
 class Survey(db.Model):
