@@ -305,9 +305,9 @@
 	});
 
 	{% if explanation_version == 0 %}
-		const update_step = 11
+		const update_step = 11;
 	{% elif explanation_version == 1 %}
-		const update_step = 12
+		const update_step = 12;
 	{% endif %}
 
 	intro.onbeforechange(function () {
@@ -322,6 +322,31 @@
 	function startTutorial() {
 		document.getElementById("study_tutorial_collapse").classList.add("show");
 		intro.start();
+
+		{% if explanation_version == 1 %}
+			{% for concept in concept_out %}
+			new Zoomist('.zoomist-container-{{ concept[0] }}', {
+				// Optional parameters
+				maxScale: 4,
+				bounds: true,
+				// if you need slider
+				slider: false,
+				// if you need zoomer
+				zoomer: false
+			});
+			{% endfor %}
+		{% endif %}
+
+		// main image
+		new Zoomist('.zoomist-container', {
+			// Optional parameters
+			maxScale: 4,
+			bounds: true,
+			// if you need slider
+			slider: false,
+			// if you need zoomer
+			zoomer: true
+		});
 	};
 
 
@@ -400,31 +425,6 @@
 			container.appendChild(document.getElementById(explanation[0]))
 		});
 	};
-
-	{% if explanation_version == 1 %}
-		{% for concept in concept_out %}
-		new Zoomist('.zoomist-container-{{ concept[0] }}', {
-			// Optional parameters
-			maxScale: 4,
-			bounds: true,
-			// if you need slider
-			slider: false,
-			// if you need zoomer
-			zoomer: false
-		});
-		{% endfor %}
-	{% endif %}
-
-	// main image
-	new Zoomist('.zoomist-container', {
-		// Optional parameters
-		maxScale: 4,
-		bounds: true,
-		// if you need slider
-		slider: false,
-		// if you need zoomer
-		zoomer: true
-	});
 
 	// run all functions for the inital page load
 	window.onload = function() {

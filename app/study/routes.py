@@ -144,8 +144,6 @@ def samples():
 		db.session.add(sample)
 		db.session.commit()
 
-		print(sample)
-
 		# remove sample from samples_left
 		del samples_left[-1]
 		session["samples_left"] = samples_left
@@ -306,8 +304,6 @@ def log_range_update():
 	)
 	db.session.add(action)
 	db.session.commit()
-
-	print(action)
 
 	return jsonify("Action logged")
 
