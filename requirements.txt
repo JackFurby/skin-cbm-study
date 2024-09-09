@@ -4,7 +4,7 @@ flask-sqlalchemy==3.1.*
 flask-migrate==4.0.*
 flask-mail==0.9.*
 libsass==0.22.*
-opencv-python==4.8.1.*
+opencv-python==4.10.0.*
 imageio_ffmpeg==0.4.*
 imageio==2.33.*
 wadllib==1.3.*
