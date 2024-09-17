@@ -2,7 +2,6 @@ Flask==3.0.*
 Flask-WTF==1.2.*
 flask-sqlalchemy==3.1.*
 flask-migrate==4.0.*
-flask-mail==0.9.*
 libsass==0.23.*
 opencv-python==4.10.0.*
 imageio_ffmpeg==0.5.*
